@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+
+*{
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+
+}
+
+
+header{
+  grid-area: header;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin: 20px;
+}
+
+
+
+header img {
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  margin-right: 15px;
+}
+
+nav{
+  grid-area: nav;
+  background-color: #10497e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:space-between;
+  padding: 100px 0;
+}
+
+nav .menu{
+  /*margin-top: 100px;*/
+}
+
+nav div a{
+ text-decoration: none;
+ color: white;
+ font-size: 20px;
+ line-height: 2.5em;
+}
+
+
+button {
+  width: 80px;
+  cursor: pointer;
+  box-shadow: 0px 0px 2px gray;
+  border: none;
+  outline: none;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+}
+
+.fc .fc-toolbar-title{
+  padding: 0 40px;
+}
+
+
+#header {
+  padding: 10px;
+  color: #d36c6c;
+  font-size: 26px;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: space-between;
+}
+#header button {
+  background-color:#92a1d1;
+}
+
+.info{
+  grid-area: info;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.info .title{
+  position: absolute;
+  top: 15%;
+}
+
+.logout-button{
+  background-color: red;
+  padding: 2px 10px;
+  color: white;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.logout-button:hover{
+  background-color: transparent;
+  color: red;
+  cursor: pointer;
+}
+
+footer{
+  /*position: absolute;
+  bottom: 10px;*/
+  text-align: center;
+  font-size: 14px;
+  padding: 0px 10px;
+  color: white;
+  font-weight: 300;
+}

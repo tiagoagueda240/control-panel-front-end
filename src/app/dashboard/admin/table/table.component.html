@@ -1,0 +1,118 @@
+<section class="searchSection mat-elevation-z8">
+	<div fxLayout="row" fxLayoutAlign="space-around center">
+		<button mat-raised-button [ngClass]="'filter-button'" (click)="getAllSelected()">Show Selected</button>
+		<button mat-raised-button [ngClass]="'filter-button'" (click)="addRecord()">Adicionar</button>
+	</div>
+	<div fxLayout="row" fxLayoutAlign="space-around center">
+		<!-- Last name query. -->
+		<mat-form-field id="searchField">
+			<input matInput  placeholder="Pesquisar por numero">
+			<mat-hint align="start">Introduza um numero</mat-hint>
+		</mat-form-field>
+
+	</div>
+</section>
+<!-- End search section -->
+<section class='tableSection'>
+	<mat-table class="matTable" [dataSource]="dataSource">
+
+		<ng-container matColumnDef="select">
+			<mat-header-cell *matHeaderCellDef> Selecionar </mat-header-cell>
+			<mat-cell *matCellDef="let row">
+				<mat-checkbox></mat-checkbox>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="id">
+			<mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+			<mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="nome">
+			<mat-header-cell *matHeaderCellDef> Nome </mat-header-cell>
+			<mat-cell  *matCellDef="let row">  {{row.name}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="email">
+			<mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.email}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="vinculo">
+			<mat-header-cell *matHeaderCellDef> Vinculo </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.vinculo}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="maxHours">
+			<mat-header-cell *matHeaderCellDef> Horas máximas </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.maxHours}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="minHours">
+			<mat-header-cell *matHeaderCellDef> Horas minimas </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.minHours}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="ects">
+			<mat-header-cell *matHeaderCellDef> Ects </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.ects}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="curricularYear">
+			<mat-header-cell *matHeaderCellDef> Ano </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.curricularYear}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="semestre">
+			<mat-header-cell *matHeaderCellDef> Semestre </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.semestre}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="ciclo">
+			<mat-header-cell *matHeaderCellDef> Ciclo </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.ciclo}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="horasPraticas">
+			<mat-header-cell *matHeaderCellDef> Horas Práticas </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.horasPraticas}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="horasTeoricas">
+			<mat-header-cell *matHeaderCellDef> Horas Teóricas </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.horasTeoricas}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="acronym">
+			<mat-header-cell *matHeaderCellDef> Acrónimo </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.acronym}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="studyCycle">
+			<mat-header-cell *matHeaderCellDef> Ciclo </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.studyCycle}} </mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="options">
+			<mat-header-cell *matHeaderCellDef> . </mat-header-cell>
+			<mat-cell *matCellDef="let row">
+				<button mat-mini-fab color="warn" aria-label="Example icon button with a menu icon">
+					<mat-icon>delete</mat-icon>				
+				</button>
+				<button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+					<mat-icon>edit</mat-icon>
+				</button>
+				
+			</mat-cell>
+		</ng-container>
+
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+	</mat-table>
+
+	<mat-paginator #paginator
+	[pageIndex]="0"
+	[pageSize]="5"
+	[pageSizeOptions]="[5, 10, 25, 100]">
+	</mat-paginator>
+</section>

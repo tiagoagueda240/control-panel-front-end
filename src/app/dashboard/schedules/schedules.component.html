@@ -1,0 +1,48 @@
+<!--<h2 style="position: absolute; top: -50px; left: 50px; font-size: 20px;">Agendamentos</h2>-->
+<div class="home-section-text">Agendamentos</div>
+
+<div class="filters">
+
+    <mat-form-field appearance="fill">
+      <mat-label>Curso</mat-label>
+      
+      <mat-select [(ngModel)]="selectedCourse" (selectionChange)="courseSelected()">
+        <mat-option *ngFor="let curso of cursos" [value]="curso">
+          {{curso}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Ano</mat-label>
+      <mat-select [(ngModel)]="selectedYear" (selectionChange)="yearSelected()">
+        <mat-option *ngFor="let ano of anos" [value]="ano">
+          {{ano}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Turma</mat-label>
+      <mat-select [(ngModel)]="selectedSchoolClass">
+        <mat-option *ngFor="let turma of turmas" [value]="turma">
+          {{turma}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button (click)="searchTimeSchedules()">Filtrar</button>
+    <button mat-fab matTooltip="Exportar excel" aria-label="Exportar excel" (click)="exportXLSX()">
+      <mat-icon>file_present</mat-icon>    
+    </button>
+</div>
+
+<div class='calendario info'>
+  <div class='calendario-main'>
+    <full-calendar
+      *ngIf='calendarVisible'
+      [options]='calendarOptions'
+    ></full-calendar>
+
+  </div>
+
+</div>

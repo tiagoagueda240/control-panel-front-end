@@ -1,0 +1,16 @@
+<div class="home-section-text">Administração</div>
+
+<mat-tab-group>
+    <mat-tab label="Alunos">
+        <app-table [type]="'alunos'"></app-table>
+    </mat-tab>
+    <mat-tab label="Docentes">
+        <app-table [type]="'docentes'"></app-table>
+    </mat-tab>
+    <mat-tab label="Unidades Curriculares">
+        <app-table [type]="'ucs'"></app-table>
+    </mat-tab>
+    <mat-tab label="Cursos">
+        <app-table [type]="'cursos'"></app-table>
+    </mat-tab>
+</mat-tab-group>
