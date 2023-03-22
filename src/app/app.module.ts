@@ -31,6 +31,10 @@ import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { MatInputModule } from '@angular/material/input';
+import { DatePipe } from '@angular/common';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 
@@ -46,7 +50,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     ClassroomRequestsComponent,
     PopupScheduleComponent,
     AdminComponent,
-    TableComponent
+    TableComponent,
 
   ],
   imports: [
@@ -69,12 +73,14 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     MatTableModule,
     MatCheckboxModule,
     MatPaginatorModule,
-    FullCalendarModule
+    FullCalendarModule,
+    MatInputModule,
+    MatDatepickerModule,MatNativeDateModule
   ],
   entryComponents: [
     PopupScheduleComponent
   ],
-  providers: [UserService, RequestService, SchoolClassService],
+  providers: [UserService, RequestService, SchoolClassService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

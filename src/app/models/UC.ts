@@ -1,9 +1,15 @@
+export interface UC {
+  id: number;
+  curricularYear: number;
+  ects: number;
+  name: String;
+  semestre: number;
+  users: Teacher[]
+}
 
-export class UC{
-    public id: number;
-    public curricularYear: number;
-    public ects: number;
-    public name: String;
-    public semestre: number;
 
+export interface Teacher {
+  id: number;
+  name: string;
+  functionType: string;
 }

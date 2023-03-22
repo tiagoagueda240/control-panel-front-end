@@ -25,3 +25,11 @@
     width: 200px;
 }
 
+.input-box {
+  width: 50%;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+

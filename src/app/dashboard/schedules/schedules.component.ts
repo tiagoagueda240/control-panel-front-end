@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CalendarOptions, Calendar, DateSelectArg, EventApi, EventClickArg } from '@fullcalendar/core'; // useful for typechecking
 
-import nbLocale from "@fullcalendar/core/locales/pt";
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -17,7 +16,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import * as XLSX from 'xlsx';
-
+import allLocales from '@fullcalendar/core/locales-all';
 
 @Component({
   selector: 'app-schedules',
@@ -25,6 +24,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./schedules.component.css']
 })
 export class SchedulesComponent implements OnInit {
+
   public email: string = ""
   public user: any
   public calendarInfo: SchoolClass[] = []
@@ -35,13 +35,15 @@ export class SchedulesComponent implements OnInit {
   selectedYear: String = ""
   selectedSchoolClass: String = ""
   eventList: Event[] = []
-  timeSchedules: TimeSchedule[] = [];
+  timeSchedules: TimeSchedule[] = []
+  clear: boolean = false
 
 
   constructor(private dialog: MatDialog, private http: HttpClient, private route: ActivatedRoute, private userService: UserService, private router: Router, private schoolClassService: SchoolClassService) {
     this.cursos = new Set<String>()
     this.anos = new Set<String>()
     this.turmas = new Set<String>()
+
 
 
   }
@@ -61,6 +63,17 @@ export class SchedulesComponent implements OnInit {
     },
     initialView: 'timeGridWeek',
     weekends: true,
+    locale: 'pt-br',
+    buttonText: {
+      today:    'Hoje',
+      month:    'Mês',
+      week:     'Semana',
+      day:      'Dia',
+      list:     'Lista',
+    },/*
+    validRange: {
+      start: new Date().toISOString().split("T")[0]
+    },*/
     editable: true,
     selectable: true,
     selectMirror: true,
@@ -76,24 +89,7 @@ export class SchedulesComponent implements OnInit {
     this.anos = new Set()
     this.turmas = new Set()
 
-    this.http.get<TimeSchedule[]>('http://localhost:3000/time-schedule')
-    .subscribe((data: TimeSchedule[]) => {
-      this.timeSchedules = data;
-      const events = data.map(evento => ({
-        title: evento.curricularUnit.name,
-            startRecur: evento.startRecur + "T" + evento.startTime,
-            endRecur: evento.endRecur + "T" + evento.endTime,
-            daysOfWeek: evento.daysOfWeek, // eventos nos finais de semana
-            startTime: evento.startTime,
-            endTime: evento.endTime,
-            overlap: false, // impede eventos sobrepostos
-            color: evento.curricularUnit.color, // cor do evento
-            textColor: '#fff', // cor do texto
-            organizer: evento.teacher,
-            location: evento.classroom
-      }));
-      this.calendarOptions.events = events;
-    });
+    this.colocaHorario()
 
     this.schoolClassService.getSchoolClasses().then(response => {
       this.calendarInfo = response
@@ -118,6 +114,36 @@ export class SchedulesComponent implements OnInit {
     console.log(this.user);
   }
 
+  cleanFilters() {
+    this.selectedCourse = ""
+    this.selectedYear = ""
+    this.selectedSchoolClass = ""
+    this.clear = false
+  }
+
+  colocaHorario(){
+    this.timeSchedules = [];
+    this.http.get<TimeSchedule[]>('http://localhost:3000/time-schedule')
+    .subscribe((data: TimeSchedule[]) => {
+      this.timeSchedules = data;
+      const events = data.map(evento => ({
+        title: evento.curricularUnit.name,
+            startRecur: evento.startRecur + "T" + evento.startTime,
+            endRecur: evento.endRecur + "T" + evento.endTime,
+            daysOfWeek: evento.daysOfWeek, // eventos nos finais de semana
+            startTime: evento.startTime,
+            endTime: evento.endTime,
+            overlap: false, // impede eventos sobrepostos
+            color: evento.curricularUnit.color, // cor do evento
+            textColor: '#fff', // cor do texto
+            organizer: evento.teacher,
+            location: evento.classroom,
+      }));
+      this.calendarOptions.events = events;
+    });
+    console.log(this.calendarOptions.events)
+  }
+
 
   currentEvents: EventApi[] = []
 
@@ -131,26 +157,28 @@ export class SchedulesComponent implements OnInit {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Please enter a new title for your event');
 
-    const dialogRef = this.dialog.open(PopupScheduleComponent, {
-      data: { start: selectInfo.startStr, end: selectInfo.endStr }
-    });   // const title = prompt('Please enter a new title for your event');
-    const calendarApi = selectInfo.view.calendar;
+    if(this.selectedSchoolClass != ""){
+      const dialogRef = this.dialog.open(PopupScheduleComponent, {
+        data: { start: selectInfo.startStr, end: selectInfo.endStr, day: selectInfo.start, schoolClass: this.selectedSchoolClass }
+      });   // const title = prompt('Please enter a new title for your event');
 
-    calendarApi.unselect(); // clear date selection
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(result)
+        // ação a ser executada após o dialog ser fechado
+        if(result != "cancelou"){
+          //this.colocaHorario()
 
-    calendarApi.unselect(); // clear date selection
-/*
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
+        }
       });
-    }*/
+
+    }else{
+      alert("Selecione uma turma")
+      const calendarApi = selectInfo.view.calendar;
+      calendarApi.unselect(); // clear date selection
+    }
+
+
   }
 
 
@@ -169,6 +197,7 @@ export class SchedulesComponent implements OnInit {
   courseSelected() {
     this.anos.clear()
     this.turmas.clear()
+    this.clear = true
     this.timeSchedules.forEach((info) => {
       if(this.selectedCourse === info.schoolClass.course.name){
         this.anos.add(info.schoolClass.year.toString())
@@ -184,6 +213,7 @@ export class SchedulesComponent implements OnInit {
       }
     })
   }
+
 
   searchTimeSchedules() {
     const eventosFormatados = this.timeSchedules

@@ -1,15 +1,17 @@
 <h1 class="popup-title" mat-dialog-title>{{ title }}</h1>
 <mat-divider [ngClass]="'dividor'"></mat-divider>
 
+<div mat-dialog-content>
 <div class="input-group">
   <div class="input-box">
     <mat-form-field appearance="fill">
       <mat-label>Unidade Curricular</mat-label>
-      <mat-select [formControl]="ucControl">
-        <mat-option value="UC1">UC1</mat-option>
-        <mat-option value="UC2">UC2</mat-option>
-        <mat-option value="UC3">UC3</mat-option>
-        <mat-option value="UC4">UC4</mat-option>
+      <mat-select [formControl]="ucControl"  (selectionChange)="ucTeacher()" >
+        <div *ngFor="let uc of ucs">
+          <mat-option value={{uc.name}}>{{uc.name}}</mat-option>
+        </div>
+
+
       </mat-select>
     </mat-form-field>
   </div>
@@ -17,8 +19,8 @@
     <mat-form-field appearance="fill">
       <mat-label>Tipologia de aula</mat-label>
       <mat-select [formControl]="typeControl">
-        <mat-option value="Prática">Prática</mat-option>
-        <mat-option value="Teórica">Teórica</mat-option>
+        <mat-option value="pratica">Prática</mat-option>
+        <mat-option value="teorica">Teórica</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -28,10 +30,10 @@
     <mat-form-field appearance="fill">
       <mat-label>Sala de Aula</mat-label>
       <mat-select [formControl]="classroomControl">
-        <mat-option value="B1.2">B1.2</mat-option>
-        <mat-option value="B2.3">B2.3</mat-option>
-        <mat-option value="C4.8">C4.8</mat-option>
-        <mat-option value="A1.3">A1.3</mat-option>
+        <div *ngFor="let classroom of classroomsName">
+          <mat-option value={{classroom}}>{{classroom}}</mat-option>
+        </div>
+
       </mat-select>
     </mat-form-field>
   </div>
@@ -39,16 +41,52 @@
     <mat-form-field appearance="fill">
       <mat-label>Docente</mat-label>
       <mat-select [formControl]="teacherControl">
-        <mat-option value="João Pavia">João Pavia</mat-option>
-        <mat-option value="João Carvalho">João Carvalho</mat-option>
-        <mat-option value="Lúcio Studer">Lúcio Studer</mat-option>
-        <mat-option value="Pedro Alves">Pedro Alves</mat-option>
+        <div *ngFor="let teacher of teachers">
+          <mat-option value={{teacher.id}}>{{teacher.name}}</mat-option>
+        </div>
       </mat-select>
     </mat-form-field>
   </div>
 </div>
 
+<div class="input-group">
+  <div class="input-box">
+    <mat-form-field appearance="fill">
+      <mat-label>Data Inicial</mat-label>
+      <input matInput [matDatepicker]="picker1" [formControl]="startDateControl">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div class="input-box">
+    <mat-form-field appearance="fill">
+      <mat-label>Data Final</mat-label>
+      <input matInput [matDatepicker]="picker2" [formControl]="endDateControl">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+  </div>
+</div>
 
+
+
+       <div class="input-group">
+        <div class="input-box">
+          <mat-form-field appearance="fill">
+            <mat-label>Hora Inicial</mat-label>
+            <input matInput type="time" name="start" [formControl]="startTimeControl" required>
+          </mat-form-field>
+        </div>
+        <div class="input-box">
+          <mat-form-field appearance="fill">
+            <mat-label>Hora Final</mat-label>
+              <input matInput type="time" name="end" [formControl]="endTimeControl" required>
+          </mat-form-field>
+        </div>
+      </div>
+<!--
 <div class="input-group">
   <div class="input-box">
     <mat-label>Hora Inicial</mat-label>
@@ -62,7 +100,7 @@
     </mat-form-field>
   </div>
 </div>
-
+-->
 
 
 
@@ -70,5 +108,6 @@
 
 <div mat-dialog-actions class="input-group">
   <button mat-raised-button [ngClass]="'create-button'" color="warn" (click)="onNoClick()">Cancelar</button>
-  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial>Criar</button>
+  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial (click)="onSubmit()">Criar</button>
+</div>
 </div>
