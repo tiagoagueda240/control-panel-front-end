@@ -6,7 +6,7 @@ export class SchoolClass{
     public name: String;
     public year: String;
     public curso: String;
-    public timeSchedules: TimeSchedule;
+    public timeSchedules: TimeSchedule[];
     public curricularUnit: UC;
 
 }

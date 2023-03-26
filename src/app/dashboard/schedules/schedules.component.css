@@ -2,7 +2,6 @@
 
 .calendario {
   display: flex;
-  min-height: 100%;
   font-size: 14px;
   margin-top: 20px;
   margin-bottom: 50px;
@@ -99,7 +98,7 @@ select::-ms-expand {
   line-height: 52px;
   padding: 0;
   border: none;
-  
+
 }
 .btn-3 span {
   position: relative;

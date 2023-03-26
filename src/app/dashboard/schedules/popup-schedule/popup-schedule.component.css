@@ -1,3 +1,8 @@
+.custom-dialog {
+  max-width: 10000px !important;
+  min-width: 7000px !important;
+}
+
 .popup-title{
     text-align: center;
     font-weight: 900;
@@ -31,5 +36,10 @@
 
 .mat-form-field {
   width: 100%;
+}
+
+::ng-deep .mat-option {
+  font-size: 10px; /* Tamanho da fonte desejado */
+  padding-top: 8px;
 }
 

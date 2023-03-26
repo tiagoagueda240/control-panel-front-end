@@ -16,7 +16,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import * as XLSX from 'xlsx';
-import allLocales from '@fullcalendar/core/locales-all';
+
 
 @Component({
   selector: 'app-schedules',
@@ -56,6 +56,7 @@ export class SchedulesComponent implements OnInit {
       timeGridPlugin,
       listPlugin,
     ],
+
     headerToolbar: {
       left: 'prevYear,prev,next,nextYear today',
       center: 'title',
@@ -78,6 +79,7 @@ export class SchedulesComponent implements OnInit {
     selectable: true,
     selectMirror: true,
     dayMaxEvents: true,
+    slotMinTime: '06:00:00',
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this)
@@ -160,6 +162,7 @@ export class SchedulesComponent implements OnInit {
 
     if(this.selectedSchoolClass != ""){
       const dialogRef = this.dialog.open(PopupScheduleComponent, {
+        width: '700px',
         data: { start: selectInfo.startStr, end: selectInfo.endStr, day: selectInfo.start, schoolClass: this.selectedSchoolClass }
       });   // const title = prompt('Please enter a new title for your event');
 
@@ -257,34 +260,24 @@ export class SchedulesComponent implements OnInit {
 
   exportXLSX() {
     const worksheet = XLSX.utils.json_to_sheet([
-      {}, // linha vazia
-      {
-        "Sigla da U.C": "Sigla da U.C",
-        "Unidade curricular": "Unidade curricular",
-        " ": " ",
-        "Docente": "Docente",
-        "  ": "  ",
-        "Horas Semanais": "Horas Semanais",
-        "Data início": "Data início",
-        "Data fim": "Data fim",
-      },
-      ...this.timeSchedules.map(info => ({
-        "Sigla da U.C": info.curricularUnit.sigla,
-        "Unidade curricular": info.curricularUnit.name,
-        " ": info.schoolClass.name,
-        "Docente": info.teacher.name,
-        "  ": info.teacher.number,
-        "Horas Semanais": this.calculateHours(info.startTime, info.endTime),
-        "Data início": info.startRecur,
-        "Data fim": info.endRecur,
-      })),
+        {}, // linha vazia
+        ...this.timeSchedules.map(info => ({
+            "Sigla da U.C": info.curricularUnit.sigla,
+            "Unidade curricular": info.curricularUnit.name,
+            " ": info.schoolClass.name,
+            "Docente": info.teacher.name,
+            "  ": info.teacher.number,
+            "Horas Semanais": this.calculateHours(info.startTime, info.endTime),
+            "Data início": info.startRecur,
+            "Data fim": info.endRecur,
+        })),
     ]);
 
     worksheet["A2"] = { t: "s", v: "1D1" };
     worksheet["!merges"] = [
-      { s: { r: 0, c: 1 }, e: { r: 0, c: 2 } },
-      { s: { r: 0, c: 3 }, e: { r: 0, c: 4 } },
-      { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } }
+        { s: { r: 0, c: 1 }, e: { r: 0, c: 2 } },
+        { s: { r: 0, c: 3 }, e: { r: 0, c: 4 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } }
     ];
 
     const b1 = worksheet["B1"];
@@ -299,12 +292,12 @@ export class SchedulesComponent implements OnInit {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
     const buffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array"
+        bookType: "xlsx",
+        type: "array"
     });
 
     const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     });
 
     const url = window.URL.createObjectURL(blob);
@@ -313,7 +306,8 @@ export class SchedulesComponent implements OnInit {
     a.download = "Horários - 2º Sem 2022_23.xlsx";
     a.click();
     window.URL.revokeObjectURL(url);
-  }
+}
+
 
 
 }

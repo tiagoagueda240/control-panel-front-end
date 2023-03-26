@@ -32,7 +32,9 @@ export class PopupScheduleComponent{
   public classroomsObjects: Classroom[] = [];
   public classroomsName: Set<String>
   public teachers: Set<Teacher>
+  public ucsAdded: Set<number>
   schoolClass: string
+  schoolClassId = 1
 
 
   constructor(
@@ -52,12 +54,33 @@ export class PopupScheduleComponent{
 
     console.log(this.start);
     console.log(this.end);
+    this.ucsAdded = new Set()
+
+    this.http.get<SchoolClass[]>('http://localhost:3000/school-class')
+    .subscribe((data: SchoolClass[]) => {
+
+      data.forEach((info) => {
+        if(info.name == this.schoolClass){
+          this.schoolClassId = info.id
+
+          info.timeSchedules.forEach((timeSchedule) => {
+            this.ucsAdded.add(timeSchedule.id)
+        })
+      }
+      })
+    });
 
     this.http.get<UC[]>('http://localhost:3000/curricular-units')
     .subscribe((data: UC[]) => {
-      this.ucs = data
-
+      data.forEach((info) => {
+        console.log(this.ucsAdded)
+        console.log(" - " + this.ucsAdded.has(info.id) + " | " + info.id)
+        if(!this.ucsAdded.has(info.id)){
+          this.ucs.push(info)
+        }
+      })
     });
+
 
     this.http.get<Classroom[]>('http://localhost:3000/classroom')
     .subscribe((classroom: Classroom[]) => {
@@ -94,7 +117,6 @@ export class PopupScheduleComponent{
 
   onSubmit() {
     let ucId = 1
-    let schoolClassId = 1
 
     this.ucs.forEach((info) => {
       if(info.name == this.ucControl.value){
@@ -102,17 +124,18 @@ export class PopupScheduleComponent{
       }
     })
 
-    this.http.get<SchoolClass[]>('http://localhost:3000/school-class')
+
+this.http.get<SchoolClass[]>('http://localhost:3000/school-class')
     .subscribe((data: SchoolClass[]) => {
 
       data.forEach((info) => {
+        console.log(info.timeSchedules[0].curricularUnitId)
         if(info.name == this.schoolClass){
-          schoolClassId = info.id
+          this.schoolClassId = info.id
         }
       })
 
     });
-
 
     fetch('http://localhost:3000/time-schedule', {
   method: 'POST',
@@ -126,7 +149,7 @@ export class PopupScheduleComponent{
     "endRecur": this.endDateControl.value,
     "daysOfWeek": [this.day.getDay().toString()],
     "curricularUnitId": ucId,
-    "schoolClassId": schoolClassId,
+    "schoolClassId": this.schoolClassId,
     "classroomId": 1,
     "teacherId": Number(this.teacherControl.value) ,
     "pratica": this.typeControl.value == "pratica"
