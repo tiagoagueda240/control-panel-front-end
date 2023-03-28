@@ -10,12 +10,13 @@ import { Event } from 'src/app/models/Event';
 import { HttpClient } from '@angular/common/http';
 import { TimeSchedule } from '../../models/TimeSchedule';
 import { MatDialog } from '@angular/material/dialog';
-import { PopupScheduleComponent } from './popup-schedule/popup-schedule.component';
+import { CreateScheduleComponent } from './create-schedule/create-schedule.component';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import * as XLSX from 'xlsx';
+import { InfoScheduleComponent } from './info-schedule copy/info-schedule.component';
 
 
 @Component({
@@ -95,25 +96,20 @@ export class SchedulesComponent implements OnInit {
 
     this.schoolClassService.getSchoolClasses().then(response => {
       this.calendarInfo = response
-      console.log(this.calendarInfo)
 
       this.timeSchedules.forEach((info) => {
         this.cursos.add(info.schoolClass.course.name)
       })
   })
 
-  console.log(this.cursos)
 
 
 
 
     this.route.queryParams.subscribe((params: any) => {
-      console.log(params);
       this.email = params.email;
-      console.log(this.email);
     })
     this.user = this.userService.getUser();
-    console.log(this.user);
   }
 
   cleanFilters() {
@@ -129,7 +125,8 @@ export class SchedulesComponent implements OnInit {
     .subscribe((data: TimeSchedule[]) => {
       this.timeSchedules = data;
       const events = data.map(evento => ({
-        title: evento.curricularUnit.name,
+            groupId: evento.id.toString(),
+            title: evento.curricularUnit.name,
             startRecur: evento.startRecur + "T" + evento.startTime,
             endRecur: evento.endRecur + "T" + evento.endTime,
             daysOfWeek: evento.daysOfWeek, // eventos nos finais de semana
@@ -143,7 +140,6 @@ export class SchedulesComponent implements OnInit {
       }));
       this.calendarOptions.events = events;
     });
-    console.log(this.calendarOptions.events)
   }
 
 
@@ -161,13 +157,12 @@ export class SchedulesComponent implements OnInit {
   handleDateSelect(selectInfo: DateSelectArg) {
 
     if(this.selectedSchoolClass != ""){
-      const dialogRef = this.dialog.open(PopupScheduleComponent, {
+      const dialogRef = this.dialog.open(CreateScheduleComponent, {
         width: '700px',
         data: { start: selectInfo.startStr, end: selectInfo.endStr, day: selectInfo.start, schoolClass: this.selectedSchoolClass }
       });   // const title = prompt('Please enter a new title for your event');
 
       dialogRef.afterClosed().subscribe(result => {
-        console.log(result)
         // ação a ser executada após o dialog ser fechado
         if(result != "cancelou"){
           //this.colocaHorario()
@@ -186,10 +181,25 @@ export class SchedulesComponent implements OnInit {
 
 
   handleEventClick(clickInfo: EventClickArg) {
-    console.log(localStorage.getItem('access_token'));
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove();
-    }
+    console.log(clickInfo.event.groupId)
+    console.log(clickInfo)
+
+      const dialogRef = this.dialog.open(InfoScheduleComponent, {
+        width: '700px',
+        data: { id: clickInfo.event.groupId }
+      });   // const title = prompt('Please enter a new title for your event');
+
+      dialogRef.afterClosed().subscribe(result => {
+        // ação a ser executada após o dialog ser fechado
+        if(result == "editar"){
+          const dialogRef = this.dialog.open(CreateScheduleComponent, {
+            width: '700px',
+            data: {timeScheduleId: clickInfo.event.groupId }
+          });
+
+        }
+      });
+
   }
 
   handleEvents(events: EventApi[]) {
@@ -227,6 +237,7 @@ export class SchedulesComponent implements OnInit {
           (this.selectedSchoolClass == null || this.selectedSchoolClass === evento.schoolClass.name)
         ) {
           return {
+            groupId: evento.id.toString(),
             title: evento.curricularUnit.name,
             startRecur: evento.startRecur + "T" + evento.startTime,
             endRecur: evento.endRecur + "T" + evento.endTime,

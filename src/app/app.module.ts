@@ -20,7 +20,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { SchoolClassService } from './services/schoolClass.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
-import { PopupScheduleComponent } from './dashboard/schedules/popup-schedule/popup-schedule.component';
+import { CreateScheduleComponent } from './dashboard/schedules/create-schedule/create-schedule.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -35,6 +35,7 @@ import { MatInputModule } from '@angular/material/input';
 import { DatePipe } from '@angular/common';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { InfoScheduleComponent } from './dashboard/schedules/info-schedule copy/info-schedule.component';
 
 
 
@@ -48,7 +49,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     RequestComponent,
     TimetableComponent,
     ClassroomRequestsComponent,
-    PopupScheduleComponent,
+    CreateScheduleComponent,
+    InfoScheduleComponent,
     AdminComponent,
     TableComponent,
 
@@ -78,7 +80,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDatepickerModule,MatNativeDateModule
   ],
   entryComponents: [
-    PopupScheduleComponent
+    CreateScheduleComponent
   ],
   providers: [UserService, RequestService, SchoolClassService, DatePipe],
   bootstrap: [AppComponent]

@@ -49,4 +49,16 @@ export interface TimeSchedule {
       number: string;
     };
   }
-  
+
+  export interface simpleTimeSchedule{
+      startTime: string;
+      endTime: string;
+      startRecur?: string;
+      endRecur?: string;
+      daysOfWeek: string[];
+      curricularUnitId?: string;
+      schoolClassId?: string;
+      classroomId?: number;
+      teacherId?: number;
+      pratica?: boolean;
+  }

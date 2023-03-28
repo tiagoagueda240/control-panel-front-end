@@ -17,7 +17,7 @@ export class LoginService {
   public loginResponse?: ResponseLogin;
 
   public doLogin(requestLogin: RequestLogin){
-    
+
 
     return this.httpClient.post<ResponseLogin>("http://localhost:3000/login", requestLogin )
     .pipe(map(user => {
@@ -34,7 +34,6 @@ export class LoginService {
 
 
 public isAuthenticated():boolean{
-  console.log(localStorage.getItem('access_token') != undefined)
   if(localStorage.getItem('access_token') != undefined){
     return localStorage.getItem('access_token') !== undefined
 

@@ -29,14 +29,14 @@ export class DashboardComponent implements OnInit {
       menuBtnChange();//calling the function(optional)
     });
     }
-  
+
     if (searchBtn) {
     searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
       sidebar!.classList.toggle("open");
       menuBtnChange(); //calling the function(optional)
     });
     }
-  
+
     // following are the code to change sidebar button(optional)
     function menuBtnChange() {
      if(sidebar!.classList.contains("open")){
@@ -51,8 +51,7 @@ export class DashboardComponent implements OnInit {
     })
           this.user = this.userService.getUser()
           this.numero = this.user.email.replace('@alunos.ulht.pt', '');
-          console.log("this.user")
-          console.log(this.user)
+
   }
 
   public logout(){

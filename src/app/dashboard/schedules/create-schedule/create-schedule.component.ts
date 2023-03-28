@@ -7,17 +7,19 @@ import { HttpClient } from '@angular/common/http';
 import { Teacher, UC } from 'src/app/models/UC';
 import { Classroom } from 'src/app/models/Classroom';
 import { SchoolClass } from 'src/app/models/SchoolClass';
+import { TimeSchedule } from 'src/app/models/TimeSchedule';
 
 @Component({
-  selector: 'popup-schedule',
-  templateUrl: './popup-schedule.component.html',
-  styleUrls: ['./popup-schedule.component.css'],
+  selector: 'create-schedule',
+  templateUrl: './create-schedule.component.html',
+  styleUrls: ['./create-schedule.component.css'],
 })
-export class PopupScheduleComponent{
+export class CreateScheduleComponent{
 
   title: string;
-  start: string;
-  end: string;
+  start?: string;
+  end?: string;
+  timeScheduleId?: string;
   selectedColor: String
   ucControl = new FormControl('');
   typeControl = new FormControl('');
@@ -35,11 +37,12 @@ export class PopupScheduleComponent{
   public ucsAdded: Set<number>
   schoolClass: string
   schoolClassId = 1
+  timeSchedule: TimeSchedule;
 
 
   constructor(
     private datePipe: DatePipe,
-    public dialogRef: MatDialogRef<PopupScheduleComponent>,
+    public dialogRef: MatDialogRef<CreateScheduleComponent>,
     private formBuilder: FormBuilder,
     private http: HttpClient,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -47,13 +50,11 @@ export class PopupScheduleComponent{
 
 
     this.title = "Adicionar Unidade Curricular";
-    ({start: this.start, end: this.end, day: this.day, schoolClass: this.schoolClass} = data);
+    ({start: this.start, end: this.end, day: this.day, schoolClass: this.schoolClass, timeScheduleId: this.timeScheduleId} = data);
 
-    this.startTimeControl.setValue(new Date(this.start).toISOString().substr(11, 5));
-    this.endTimeControl.setValue(new Date(this.end).toISOString().substr(11, 5));
 
-    console.log(this.start);
-    console.log(this.end);
+
+
     this.ucsAdded = new Set()
 
     this.http.get<SchoolClass[]>('http://localhost:3000/school-class')
@@ -73,8 +74,6 @@ export class PopupScheduleComponent{
     this.http.get<UC[]>('http://localhost:3000/curricular-units')
     .subscribe((data: UC[]) => {
       data.forEach((info) => {
-        console.log(this.ucsAdded)
-        console.log(" - " + this.ucsAdded.has(info.id) + " | " + info.id)
         if(!this.ucsAdded.has(info.id)){
           this.ucs.push(info)
         }
@@ -87,24 +86,51 @@ export class PopupScheduleComponent{
       this.classroomsObjects = classroom
       this.classroomsName = new Set()
       classroom.forEach((info) => {
-        console.log(info)
 
 
         this.classroomsName.add(info.block + "." + info.floor + "." + info.classroomNumber);
       })
-      console.log(this.classroomsObjects)
     });
 
 
+    if(this.start != undefined
+      && this.end != undefined
+      ){
+      this.startTimeControl.setValue(new Date(this.start).toISOString().substr(11, 5));
+      this.endTimeControl.setValue(new Date(this.end).toISOString().substr(11, 5));
+      this.title = "Adicionar Unidade Curricular";
+    }else{
+      this.http.get<any>('http://localhost:3000/time-schedule/' + this.timeScheduleId)
+    .subscribe((timeSchedule: any) => {
+      console.log(timeSchedule)
+      this.timeSchedule = timeSchedule
+      this.startTimeControl.setValue(this.timeSchedule.startTime.slice(0, -3));
+      this.endTimeControl.setValue(this.timeSchedule.endTime.slice(0, -3));
+      this.typeControl.setValue(this.timeSchedule.pratica ? "pratica" : "teorica")
+      this.ucControl.setValue(this.timeSchedule.curricularUnit.name)
+      this.classroomControl.setValue(this.timeSchedule.classroom.block + "." + this.timeSchedule.classroom.floor + "." + this.timeSchedule.classroom.classroomNumber)
+      this.ucTeacher()
+      this.teacherControl.setValue(this.timeSchedule.teacherId.toString())
+
+      const dataInicio = new Date(this.timeSchedule.startRecur);
+      this.startDateControl.setValue(`${(dataInicio.getMonth() + 1).toString().padStart(2, "0")}/${dataInicio.getDate().toString().padStart(2, "0")}/${dataInicio.getFullYear().toString()}`);
+
+      const dataFim = new Date(this.timeSchedule.endRecur);
+      this.endDateControl.setValue(`${(dataFim.getMonth() + 1).toString().padStart(2, "0")}/${dataFim.getDate().toString().padStart(2, "0")}/${dataFim.getFullYear().toString()}`);
+
+    });
+    this.title = "Editar Unidade Curricular";
+
+    }
   }
 
   onNoClick(): void {
+    console.log(this.endDateControl.value)
     this.dialogRef.close("cancelou");
   }
 
   ucTeacher() {
-    console.log("entrou")
-    console.log(this.ucs)
+
     this.teachers = new Set()
     this.ucs.forEach((info) => {
       if(info.name == this.ucControl.value){

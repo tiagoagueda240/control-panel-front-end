@@ -1,0 +1,20 @@
+<h1 class="popup-title" mat-dialog-title>{{ title }}</h1>
+<p class="popup-subtitle">{{ subtitle }}</p>
+<mat-divider [ngClass]="'dividor'"></mat-divider>
+
+<div mat-dialog-content>
+  <p>{{curricularUnit}}</p>
+
+  <p>{{classroom}}</p>
+  <p>{{time}}</p>
+  <p>{{days}}</p>
+  <p>{{schoolClass}}</p>
+
+
+<div mat-dialog-actions class="input-group">
+  <button mat-raised-button [ngClass]="'create-button'" color="warn" (click)="onNoClick()">Fechar</button>
+  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial>Eliminar</button>
+  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial (click)="onEdit()">Editar</button>
+</div>
+
+</div>
