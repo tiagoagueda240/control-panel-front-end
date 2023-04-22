@@ -3,18 +3,20 @@
 <mat-divider [ngClass]="'dividor'"></mat-divider>
 
 <div mat-dialog-content>
-  <p>{{curricularUnit}}</p>
 
-  <p>{{classroom}}</p>
+  <p><b>Sala de Aula:</b> {{classroom}}</p>
+
+  <p> <b>Ano letivo:</b> {{schoolClassYear}}</p>
+  <p><b>Semestre:</b> {{curricularUnitSemestre}}</p>
+  <p><b>Ects:</b> {{curricularUnitEcts}}</p>
   <p>{{time}}</p>
   <p>{{days}}</p>
-  <p>{{schoolClass}}</p>
 
 
 <div mat-dialog-actions class="input-group">
-  <button mat-raised-button [ngClass]="'create-button'" color="warn" (click)="onNoClick()">Fechar</button>
-  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial>Eliminar</button>
-  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial (click)="onEdit()">Editar</button>
+  <button mat-raised-button [ngClass]="'create-button'" color="accent" (click)="onNoClick()">Fechar</button>
+  <button mat-raised-button [ngClass]="'create-button'" color="warn" cdkFocusInitial (click)="onDelete()">Eliminar</button>
+  <button mat-raised-button [ngClass]="'create-button'" color="primary" cdkFocusInitial (click)="onEdit()">Editar</button>
 </div>
 
 </div>

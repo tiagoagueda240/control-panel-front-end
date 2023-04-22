@@ -1,30 +1,3 @@
-<!--<div class="geral-section">
-  <header>
-      <img src="../../../assets/images/dashboard/img_avatar.png" alt="Avatar">
-      <div class="perfil">
-        <p *ngIf="user != null"><b>{{user.name}}</b></p>
-        <p>{{numero}}</p>
-        <span class="logout-button" routerLink="/login">Logout</span>
-      </div>
-    </header>
-    <nav>
-      <img src="../../../assets/images/dashboard/logo_ulht.png" alt="" width="100" height="100">
-      <div class="menu">
-      <div><a routerLink="/request">Requisitar Sala</a></div>
-      <div *ngIf="privilegios"><a routerLink="/dashboard/schedules">Agendamentos</a></div>
-      <div><a routerLink="/dashboard/timetable">Horário</a></div>
-      <div><a routerLink="/dashboard/notification">Notificações</a></div>
-      <div><a routerLink="/login">Logout</a></div>
-      </div>
-      <footer>
-         <p>Copyright © ULHT Control Panel 2022. All rights reserved by ULHT</p>
-      </footer>
-   </nav>
-   <section class="info">
-     <router-outlet></router-outlet>
-   </section>
-</div>-->
-<!---->
 <div class="sidebar open">
   <div class="logo-details">
     <img class="icon" src="../../../assets/images/dashboard/logo_ulht.png" alt="" width="30" height="30">
@@ -33,7 +6,7 @@
   </div>
   <ul class="nav-list">
     <li>
-      <a class="menu" href="#">
+      <a class="menu" href="/dashboard/#">
         <i class='bx bx-grid-alt'></i>
         <span class="links_name">Dashboard</span>
       </a>
@@ -41,7 +14,7 @@
     </li>
     <li>
       <a class="menu" routerLink="/request">
-       <i class='bx bx-receipt'></i>       
+       <i class='bx bx-receipt'></i>
        <span class="links_name">Requisitar Sala</span>
       </a>
       <span class="tooltip">Requisitar Sala</span>
@@ -55,18 +28,20 @@
     </li>
     <li>
       <a class="menu" routerLink="/dashboard/timetable">
-       <i class='bx bxs-calendar'></i>       
+       <i class='bx bxs-calendar'></i>
        <span class="links_name">Horário</span>
       </a>
       <span class="tooltip">Horário</span>
     </li>
     <li>
-      <a class="menu" routerLink="/dashboard/notification">
+      <a class="menu" routerLink="/dashboard/#">
         <i class='bx bx-chat' ></i>
         <span class="links_name">Notificações</span>
       </a>
       <span class="tooltip">Notificações</span>
     </li>
+
+  <!--
     <li>
      <a class="menu" href="#">
        <i class='bx bx-user' ></i>
@@ -74,24 +49,23 @@
      </a>
      <span class="tooltip">User</span>
    </li>
-   
-   <!--
-   <li>
-     <a class="menu" href="#">
-       <i class='bx bx-folder' ></i>
-       <span class="links_name">File Manager</span>
-     </a>
-     <span class="tooltip">Files</span>
-   </li>
   -->
-   
+
+
    <li>
-     <a class="menu" href="#">
+     <a class="menu" href="/dashboard/#">
        <i class='bx bx-cog' ></i>
        <span class="links_name">Setting</span>
      </a>
      <span class="tooltip">Setting</span>
    </li>
+   <li>
+    <a class="menu" href="/dashboard/admin">
+      <i class='bx bx-folder' ></i>
+      <span class="links_name">Administração</span>
+    </a>
+    <span class="tooltip">Administração</span>
+  </li>
    <li class="profile">
        <div class="profile-details">
          <!--<img src="profile.jpg" alt="profileImg">-->
@@ -105,7 +79,7 @@
   </ul>
 </div>
 <section class="home-section">
-    
+
       <router-outlet></router-outlet>
 
 </section>

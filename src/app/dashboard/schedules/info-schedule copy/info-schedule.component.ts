@@ -13,14 +13,16 @@ export class InfoScheduleComponent{
 
   id: string;
   title: string;
+  subtitle: string;
+
   timeSchedule: TimeSchedule;
   classroom: string;
-  curricularUnit: string;
+  curricularUnitEcts: string;
+  curricularUnitSemestre: string;
   time: string;
   days: string;
-  schoolClass: string;
+  schoolClassYear: string;
   tipoAula: string;
-  subtitle: string;
 
 
   constructor(
@@ -39,10 +41,12 @@ export class InfoScheduleComponent{
       this.title = timeSchedule.curricularUnit.name;
 
       this.classroom = timeSchedule.classroom.block + "." + timeSchedule.classroom.floor + "." + timeSchedule.classroom.classroomNumber
-      this.time = timeSchedule.startTime + " - " + timeSchedule.endTime
-      this.days = timeSchedule.startRecur + " - " + timeSchedule.endRecur
-      this.curricularUnit = timeSchedule.curricularUnit.ects + " | " + timeSchedule.curricularUnit.curricularYear + " | " + timeSchedule.curricularUnit.semestre
-      this.schoolClass = timeSchedule.schoolClass.name + " | " + timeSchedule.schoolClass.year /*+ " | " + timeSchedule.schoolClass.name*/
+      this.time = timeSchedule.startTime + " | " + timeSchedule.endTime
+      this.days = timeSchedule.startRecur + " | " + timeSchedule.endRecur
+      this.curricularUnitEcts = timeSchedule.curricularUnit.ects.toString()
+      this.curricularUnitSemestre = timeSchedule.curricularUnit.semestre.toString()
+
+      this.schoolClassYear = timeSchedule.schoolClass.year.toString() /*+ " | " + timeSchedule.schoolClass.name*/
       this.tipoAula = timeSchedule.pratica ? "Prática" : "Teorica"
       this.subtitle = timeSchedule.schoolClass.name + " | " + this.tipoAula
 
@@ -54,6 +58,15 @@ export class InfoScheduleComponent{
 
   onNoClick(){
     this.dialogRef.close("cancelou");
+  }
+
+  onDelete(){
+    this.http.delete(`http://localhost:3000/time-schedule/${this.id}`)
+  .subscribe(
+    () => console.log('Registro removido com sucesso'),
+    error => console.log('Ocorreu um erro ao remover o registro:', error)
+  );
+    this.dialogRef.close("eliminado");
   }
 
   onEdit() {

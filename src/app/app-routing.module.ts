@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminComponent } from './dashboard/admin/admin.component';
 import { ClassroomRequestsComponent } from './dashboard/classroom-requests/classroom-requests.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SchedulesComponent } from './dashboard/schedules/schedules.component';
@@ -15,6 +16,7 @@ export const routes: Routes = [
       {path: 'ClassroomRequests', component: ClassroomRequestsComponent},
       {path: 'schedules', component: SchedulesComponent},
       {path: 'timetable', component: TimetableComponent},
+      {path: 'admin', component: AdminComponent},
     ] , canActivate: [AuthGuardService]},
     {path: '**', redirectTo: ''},
 ];

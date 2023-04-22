@@ -61,14 +61,19 @@ export class CreateScheduleComponent{
     .subscribe((data: SchoolClass[]) => {
 
       data.forEach((info) => {
+
+
         if(info.name == this.schoolClass){
           this.schoolClassId = info.id
 
+
           info.timeSchedules.forEach((timeSchedule) => {
-            this.ucsAdded.add(timeSchedule.id)
+            this.ucsAdded.add(timeSchedule.curricularUnitId)
+
         })
       }
       })
+
     });
 
     this.http.get<UC[]>('http://localhost:3000/curricular-units')
@@ -78,6 +83,8 @@ export class CreateScheduleComponent{
           this.ucs.push(info)
         }
       })
+
+
     });
 
 
