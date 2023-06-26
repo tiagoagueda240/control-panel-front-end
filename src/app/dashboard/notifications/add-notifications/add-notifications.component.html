@@ -1,0 +1,29 @@
+<h1 class="popup-title" mat-dialog-title>{{ title }}</h1>
+<mat-divider [ngClass]="'dividor'"></mat-divider>
+
+<div mat-dialog-content>
+
+<div class="input-group">
+  <div class="input-box">
+    <mat-form-field appearance="fill">
+      <mat-label>Sala de Aula</mat-label>
+      <mat-select [formControl]="classroomControl">
+        <mat-option *ngFor="let classroom of classroomsName" [value]="classroom">
+          {{ classroom }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+</div>
+
+
+
+
+
+
+<div mat-dialog-actions class="input-group">
+  <button mat-raised-button [ngClass]="'create-button'" color="warn" (click)="onNoClick()">Cancelar</button>
+  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial (click)="onSubmit()">Submeter</button>
+</div>
+</div>

@@ -1,0 +1,60 @@
+.input-group {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+
+.home-section-text{
+  display: inline-block;
+  color: #11101d;
+  font-size: 25px;
+  font-weight: 500;
+  margin: 18px
+}
+
+.form{
+  margin-top: 5%;
+}
+
+button{
+  width: auto;
+  padding: 25px;
+  font-size: 18px;
+}
+
+
+.example-full-width{
+  width: 100%;
+}
+
+.input-box {
+  display: flex;
+  flex-direction: column;
+  margin:0 10px;
+  margin-bottom: 1.1rem;
+}
+
+.input-box {
+  display: flex;
+  flex-direction: column;
+  margin:0 10px;
+  margin-bottom: 1.1rem;
+}
+
+
+.create-button{
+  width: 200px;
+}
+
+.input-box {
+width: 50%;
+}
+
+.mat-form-field {
+width: 100%;
+}
+
+::ng-deep .mat-option {
+font-size: 10px; /* Tamanho da fonte desejado */
+padding-top: 8px;
+}

@@ -1,0 +1,8 @@
+<h1 class="popup-title" mat-dialog-title>Confirmação</h1>
+<!--<mat-divider [ngClass]="'dividor'"></mat-divider>-->
+<p class="popup-subtitle">{{ message }}</p>
+
+<div mat-dialog-actions class="input-group">
+  <button mat-raised-button color="accent" cdkFocusInitial (click)="onNoClick()">Não</button>
+  <button mat-raised-button color="warn" cdkFocusInitial (click)="onYesClick()">Sim</button>
+</div>

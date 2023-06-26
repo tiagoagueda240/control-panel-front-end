@@ -1,15 +1,16 @@
 <section class="searchSection mat-elevation-z8">
-	<div fxLayout="row" fxLayoutAlign="space-around center">
-		<button mat-raised-button [ngClass]="'filter-button'" (click)="getAllSelected()">Show Selected</button>
-		<button mat-raised-button [ngClass]="'filter-button'" (click)="addRecord()">Adicionar</button>
-	</div>
-	<div fxLayout="row" fxLayoutAlign="space-around center">
-		<!-- Last name query. -->
+	<!--<div fxLayout="row" fxLayoutAlign="space-around center">
 		<mat-form-field id="searchField">
 			<input matInput  placeholder="Pesquisar por numero">
 			<mat-hint align="start">Introduza um numero</mat-hint>
 		</mat-form-field>
+	</div>-->
 
+  <div class="filter">
+		<!--<button mat-raised-button [ngClass]="'filter-button'" (click)="getAllSelected()">Show Selected</button>-->
+    <button mat-mini-fab color="primary" matTooltip="Adicionar" aria-label="Example icon button with a delete icon" (click)="onCreate()">
+      <mat-icon>add</mat-icon>
+    </button>
 	</div>
 </section>
 <!-- End search section -->
@@ -23,14 +24,14 @@
 			</mat-cell>
 		</ng-container>
 
-		<ng-container matColumnDef="id">
-			<mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
-			<mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
-		</ng-container>
-
 		<ng-container matColumnDef="nome">
 			<mat-header-cell *matHeaderCellDef> Nome </mat-header-cell>
 			<mat-cell  *matCellDef="let row">  {{row.name}} </mat-cell>
+		</ng-container>
+
+    <ng-container matColumnDef="numero">
+			<mat-header-cell *matHeaderCellDef> Número </mat-header-cell>
+			<mat-cell  *matCellDef="let row">  {{row.number}} </mat-cell>
 		</ng-container>
 
 		<ng-container matColumnDef="email">
@@ -54,7 +55,7 @@
 		</ng-container>
 
 		<ng-container matColumnDef="ects">
-			<mat-header-cell *matHeaderCellDef> Ects </mat-header-cell>
+			<mat-header-cell *matHeaderCellDef> ECTS </mat-header-cell>
 			<mat-cell *matCellDef="let row">  {{row.ects}} </mat-cell>
 		</ng-container>
 
@@ -93,16 +94,32 @@
 			<mat-cell *matCellDef="let row">  {{row.studyCycle}} </mat-cell>
 		</ng-container>
 
+    <ng-container matColumnDef="sala">
+			<mat-header-cell *matHeaderCellDef> Sala </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.sala}} </mat-cell>
+		</ng-container>
+
+    <ng-container matColumnDef="ocupacionLimit">
+			<mat-header-cell *matHeaderCellDef> Ocupação </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.ocupacionLimit}} </mat-cell>
+		</ng-container>
+
+    <ng-container matColumnDef="haveEquipment">
+			<mat-header-cell *matHeaderCellDef> Tem equipamento? </mat-header-cell>
+			<mat-cell *matCellDef="let row">  {{row.haveEquipment}} </mat-cell>
+		</ng-container>
+
+
 		<ng-container matColumnDef="options">
 			<mat-header-cell *matHeaderCellDef> . </mat-header-cell>
 			<mat-cell *matCellDef="let row">
-				<button mat-mini-fab color="warn" aria-label="Example icon button with a menu icon">
-					<mat-icon>delete</mat-icon>				
+				<button mat-mini-fab color="warn" matTooltip="Eliminar" aria-label="Example icon button with a menu icon" (click)="onDelete(row)">
+					<mat-icon>delete</mat-icon>
 				</button>
-				<button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+				<button mat-mini-fab color="primary" matTooltip="Editar" aria-label="Example icon button with a menu icon" (click)="onEdit(row)">
 					<mat-icon>edit</mat-icon>
 				</button>
-				
+
 			</mat-cell>
 		</ng-container>
 
@@ -110,9 +127,9 @@
 		<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 	</mat-table>
 
-	<mat-paginator #paginator
-	[pageIndex]="0"
-	[pageSize]="5"
-	[pageSizeOptions]="[5, 10, 25, 100]">
-	</mat-paginator>
+  <mat-paginator [length]="100"
+  [pageSize]="10"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  aria-label="Select page">
+</mat-paginator>
 </section>

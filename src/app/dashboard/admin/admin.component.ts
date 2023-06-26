@@ -7,8 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AdminComponent {
 
-  public type = ['alunos','docentes','ucs','cursos',
-  
+  public type = ['alunos','docentes','ucs','cursos','salas'
+
 ];
 
 }

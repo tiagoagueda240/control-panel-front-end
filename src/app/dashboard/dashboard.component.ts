@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit {
   public numero: string;
   public privilegios: boolean;
 
-  constructor(private route: ActivatedRoute, private userService: UserService, private router: Router, private loginService: LoginService) { }
+  constructor(private route: ActivatedRoute, private userService: UserService, private loginService: LoginService) { }
 
 
   ngOnInit(): void {
@@ -52,6 +52,16 @@ export class DashboardComponent implements OnInit {
           this.user = this.userService.getUser()
           this.numero = this.user.email.replace('@alunos.ulht.pt', '');
 
+  }
+
+  isSecretariado(): Boolean{
+    this.userService.infosUserByEmail(this.userService.getUser().email).then(user => {
+      this.user = user
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+    });
+    return "secretariado" == this.user.functionType
   }
 
   public logout(){

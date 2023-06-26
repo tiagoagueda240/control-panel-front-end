@@ -31,8 +31,46 @@ export class UserService {
       try {
         return jwt_decode(localStorage.getItem('access_token')!);
       } catch (Error) {
-        
+
       }
+    }
+
+    public async getProfessores(): Promise<User[]> {
+      const url = 'http://localhost:3000/users';
+      const users = await this.httpClient.get<User[]>(url).toPromise();
+      if (users) {
+        return users.filter((user) => user.functionType === 'professor');
+      } else {
+        return [];
+      }
+    }
+
+    public async getAlunos(): Promise<User[]> {
+      const url = 'http://localhost:3000/users';
+      const users = await this.httpClient.get<User[]>(url).toPromise();
+      if (users) {
+        return users.filter((user) => user.functionType === 'aluno');
+      } else {
+        return [];
+      }
+    }
+
+    deleteUser(id: string): Observable<any> {
+      return this.httpClient.delete(`http://localhost:3000/users/${id}`);
+    }
+
+    addUser(user: any) {
+      const url = 'http://localhost:3000/users';
+
+      return this.httpClient.post<any>(url, user)
+
+    }
+
+    editUser(user: any, id: number) {
+      const url = `http://localhost:3000/users/${id}`;
+
+      return this.httpClient.patch<any>(url, user)
+
     }
 
 }

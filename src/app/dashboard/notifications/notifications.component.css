@@ -1,0 +1,39 @@
+
+.info{
+  justify-content: start;
+  flex-wrap: wrap;
+  margin: 50px;
+}
+
+.mat-card-content {
+  padding: 16px; /* Defina o valor de padding desejado */
+}
+
+.home-section-text{
+  display: inline-block;
+  color: #11101d;
+  font-size: 25px;
+  font-weight: 500;
+  margin: 18px
+}
+
+.mat-elevation-z4{
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  margin: 10px;
+
+}
+
+
+.status-analise{
+  color: darkgoldenrod;
+}
+
+.status-recusado{
+  color: red;
+}
+
+.status-aprovado{
+  color: green;
+}

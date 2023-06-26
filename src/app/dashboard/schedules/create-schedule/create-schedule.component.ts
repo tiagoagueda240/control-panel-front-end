@@ -8,6 +8,8 @@ import { Teacher, UC } from 'src/app/models/UC';
 import { Classroom } from 'src/app/models/Classroom';
 import { SchoolClass } from 'src/app/models/SchoolClass';
 import { TimeSchedule } from 'src/app/models/TimeSchedule';
+import { SchedulesService } from 'src/app/services/schedules.service';
+import { ClassroomService } from 'src/app/services/classroom.service';
 
 @Component({
   selector: 'create-schedule',
@@ -38,13 +40,18 @@ export class CreateScheduleComponent{
   schoolClass: string
   schoolClassId = 1
   timeSchedule: TimeSchedule;
-
+  schoolClassSize: number
+  ucsAddedFinal: Set<number>;
+  tipologiaAulas: {[key: string]: Set<string>} = {}
+  tipologiaUc: Set<string>
 
   constructor(
     private datePipe: DatePipe,
     public dialogRef: MatDialogRef<CreateScheduleComponent>,
     private formBuilder: FormBuilder,
+    private schedulesService: SchedulesService,
     private http: HttpClient,
+    private classroomService: ClassroomService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
 
@@ -54,21 +61,26 @@ export class CreateScheduleComponent{
 
 
 
-
     this.ucsAdded = new Set()
+    this.ucsAddedFinal = new Set()
 
     this.http.get<SchoolClass[]>('http://localhost:3000/school-class')
     .subscribe((data: SchoolClass[]) => {
 
       data.forEach((info) => {
-
+        this.schoolClassSize = info.users.length
 
         if(info.name == this.schoolClass){
           this.schoolClassId = info.id
 
 
           info.timeSchedules.forEach((timeSchedule) => {
-            this.ucsAdded.add(timeSchedule.curricularUnitId)
+            if(this.ucsAdded.has(timeSchedule.curricularUnit.id)){
+              this.ucsAddedFinal.add(timeSchedule.curricularUnit.id)
+            }
+            this.tipologiaAulas[timeSchedule.curricularUnit.name] = new Set();
+            this.tipologiaAulas[timeSchedule.curricularUnit.name].add( timeSchedule.pratica ? "Teórica" : "Prática")
+            this.ucsAdded.add(timeSchedule.curricularUnit.id)
 
         })
       }
@@ -79,7 +91,7 @@ export class CreateScheduleComponent{
     this.http.get<UC[]>('http://localhost:3000/curricular-units')
     .subscribe((data: UC[]) => {
       data.forEach((info) => {
-        if(!this.ucsAdded.has(info.id)){
+        if(!this.ucsAddedFinal.has(info.id)){
           this.ucs.push(info)
         }
       })
@@ -94,7 +106,7 @@ export class CreateScheduleComponent{
       this.classroomsName = new Set()
       classroom.forEach((info) => {
 
-
+        if(info.ocupationLimit > this.schoolClassSize)
         this.classroomsName.add(info.block + "." + info.floor + "." + info.classroomNumber);
       })
     });
@@ -103,27 +115,25 @@ export class CreateScheduleComponent{
     if(this.start != undefined
       && this.end != undefined
       ){
+
       this.startTimeControl.setValue(new Date(this.start).toISOString().substr(11, 5));
       this.endTimeControl.setValue(new Date(this.end).toISOString().substr(11, 5));
       this.title = "Adicionar Unidade Curricular";
     }else{
       this.http.get<any>('http://localhost:3000/time-schedule/' + this.timeScheduleId)
     .subscribe((timeSchedule: any) => {
-      console.log(timeSchedule)
       this.timeSchedule = timeSchedule
-      this.startTimeControl.setValue(this.timeSchedule.startTime.slice(0, -3));
-      this.endTimeControl.setValue(this.timeSchedule.endTime.slice(0, -3));
-      this.typeControl.setValue(this.timeSchedule.pratica ? "pratica" : "teorica")
+      this.startTimeControl.setValue(this.timeSchedule.startTime);
+      this.endTimeControl.setValue(this.timeSchedule.endTime);
+      this.typeControl.setValue(this.timeSchedule.pratica ? "Prática" : "Teórica")
       this.ucControl.setValue(this.timeSchedule.curricularUnit.name)
       this.classroomControl.setValue(this.timeSchedule.classroom.block + "." + this.timeSchedule.classroom.floor + "." + this.timeSchedule.classroom.classroomNumber)
       this.ucTeacher()
       this.teacherControl.setValue(this.timeSchedule.teacherId.toString())
 
-      const dataInicio = new Date(this.timeSchedule.startRecur);
-      this.startDateControl.setValue(`${(dataInicio.getMonth() + 1).toString().padStart(2, "0")}/${dataInicio.getDate().toString().padStart(2, "0")}/${dataInicio.getFullYear().toString()}`);
+      this.startDateControl.setValue(this.timeSchedule.startRecur.slice(0,10));
+      this.endDateControl.setValue(this.timeSchedule.endRecur.slice(0,10));
 
-      const dataFim = new Date(this.timeSchedule.endRecur);
-      this.endDateControl.setValue(`${(dataFim.getMonth() + 1).toString().padStart(2, "0")}/${dataFim.getDate().toString().padStart(2, "0")}/${dataFim.getFullYear().toString()}`);
 
     });
     this.title = "Editar Unidade Curricular";
@@ -132,12 +142,21 @@ export class CreateScheduleComponent{
   }
 
   onNoClick(): void {
-    console.log(this.endDateControl.value)
     this.dialogRef.close("cancelou");
   }
 
   ucTeacher() {
+    //this.tipologiaUc.clear()
 
+    if(this.ucControl.value != null){
+      this.tipologiaUc = this.tipologiaAulas[this.ucControl.value]
+      if(this.tipologiaUc == undefined){
+        this.tipologiaUc = new Set();
+        this.tipologiaUc.add("Teórica")
+        this.tipologiaUc.add("Prática")
+      }
+
+    }
     this.teachers = new Set()
     this.ucs.forEach((info) => {
       if(info.name == this.ucControl.value){
@@ -148,6 +167,8 @@ export class CreateScheduleComponent{
     })
   }
 
+
+
   onSubmit() {
     let ucId = 1
 
@@ -157,43 +178,58 @@ export class CreateScheduleComponent{
       }
     })
 
-
-this.http.get<SchoolClass[]>('http://localhost:3000/school-class')
-    .subscribe((data: SchoolClass[]) => {
-
-      data.forEach((info) => {
-        console.log(info.timeSchedules[0].curricularUnitId)
-        if(info.name == this.schoolClass){
-          this.schoolClassId = info.id
-        }
-      })
-
+    var classroomId = 0
+    this.classroomService.getClassroom().then(response => {
+      classroomId = response.id
     });
 
-    fetch('http://localhost:3000/time-schedule', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    "startTime": this.startTimeControl.value,
-    "endTime": this.endTimeControl.value,
-    "startRecur": this.startDateControl.value,
-    "endRecur": this.endDateControl.value,
-    "daysOfWeek": [this.day.getDay().toString()],
-    "curricularUnitId": ucId,
-    "schoolClassId": this.schoolClassId,
-    "classroomId": 1,
-    "teacherId": Number(this.teacherControl.value) ,
-    "pratica": this.typeControl.value == "pratica"
-  })
-}).then(response => {
-  console.log(response);
-}).catch(error => {
-  console.error(error);
-});
+    const formData = this.formBuilder.group({
+      startTime: this.startTimeControl.value,
+      endTime: this.endTimeControl.value,
+      startRecur: this.startDateControl.value,
+      endRecur:  this.endDateControl.value,
+      daysOfWeek: [new Date(Date.parse(this.startDateControl.value)).getDay().toString()],
+      curricularUnitId: ucId,
+      schoolClassId: this.schoolClassId,
+      classroomId: classroomId ,
+      teacherId: Number(this.teacherControl.value),
+      pratica: this.typeControl.value == "Prática"
 
-    // Fechar o Dialog
-    this.dialogRef.close();
+    });
+    console.log(formData)
+
+
+    if(this.start != undefined && this.end != undefined){
+
+        this.schedulesService.addTimeSchedule( formData.value ).subscribe(
+          response => {
+            console.log('POST request successful');
+            console.log(response);
+            this.dialogRef.close("adicionou");
+
+          },
+          error => {
+            console.error('Error making POST request');
+            console.error(error);
+          }
+        );
+
+      }else{
+
+        this.schedulesService.editTimeSchedule( formData.value,  Number(this.timeScheduleId) ).subscribe(
+          response => {
+            console.log('POST request successful');
+            console.log(response);
+            this.dialogRef.close("editou");
+
+          },
+          error => {
+            console.error('Error making POST request');
+            console.error(error);
+          }
+        );
+
+      }
+
   }
 }

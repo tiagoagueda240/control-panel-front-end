@@ -2,9 +2,13 @@ export interface UC {
   id: number;
   curricularYear: number;
   ects: number;
-  name: String;
+  name: string;
   semestre: number;
-  users: Teacher[]
+  users: Teacher[];
+  ciclo: number;
+  horasPraticas: number;
+  horasTeoricas: number;
+
 }
 
 

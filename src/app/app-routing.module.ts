@@ -4,18 +4,16 @@ import { AdminComponent } from './dashboard/admin/admin.component';
 import { ClassroomRequestsComponent } from './dashboard/classroom-requests/classroom-requests.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SchedulesComponent } from './dashboard/schedules/schedules.component';
-import { TimetableComponent } from './dashboard/timetable/timetable.component';
 import { LoginComponent } from './login/login.component';
-import { RequestComponent } from './request/request.component';
 import { AuthGuardService } from './services/auth-guard.service';
+import { NotificationsComponent } from './dashboard/notifications/notifications.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
-    { path: 'request', component: RequestComponent },
     { path: 'dashboard', component: DashboardComponent, children: [
       {path: 'ClassroomRequests', component: ClassroomRequestsComponent},
       {path: 'schedules', component: SchedulesComponent},
-      {path: 'timetable', component: TimetableComponent},
+      {path: 'notifications', component: NotificationsComponent},
       {path: 'admin', component: AdminComponent},
     ] , canActivate: [AuthGuardService]},
     {path: '**', redirectTo: ''},

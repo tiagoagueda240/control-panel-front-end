@@ -13,7 +13,7 @@
   <p>{{days}}</p>
 
 
-<div mat-dialog-actions class="input-group">
+<div mat-dialog-actions class="input-group" *ngIf="isSecretariado()">
   <button mat-raised-button [ngClass]="'create-button'" color="accent" (click)="onNoClick()">Fechar</button>
   <button mat-raised-button [ngClass]="'create-button'" color="warn" cdkFocusInitial (click)="onDelete()">Eliminar</button>
   <button mat-raised-button [ngClass]="'create-button'" color="primary" cdkFocusInitial (click)="onEdit()">Editar</button>

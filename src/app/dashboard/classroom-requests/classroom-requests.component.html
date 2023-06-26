@@ -1,0 +1,85 @@
+<div class="home-section-text">Requisitar Sala</div>
+<div class="info">
+  <div class="form">
+    <div class="input-group">
+      <div class="input-box">
+        <mat-form-field appearance="fill">
+          <mat-label>Data Inicial</mat-label>
+          <input matInput [matDatepicker]="picker1" [formControl]="startDateControl">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="input-box">
+        <mat-form-field appearance="fill">
+          <mat-label>Hora Inicial</mat-label>
+          <input matInput type="time" name="start" [formControl]="startTimeControl" [value]="startTimeControl.value" required>
+        </mat-form-field>
+      </div>
+
+
+      <div class="input-box">
+        <mat-form-field appearance="fill">
+          <mat-label>Tipo de requisição</mat-label>
+          <mat-select [formControl]="tipoControl">
+              <mat-option value="aula">Aula</mat-option>
+              <mat-option value="reunião">Reunião</mat-option>
+              <mat-option value="estudo">Estudo</mat-option>
+
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="input-group">
+
+      <div class="input-box">
+        <mat-form-field appearance="fill">
+          <mat-label>Data Final</mat-label>
+          <input matInput [matDatepicker]="picker2" [formControl]="endDateControl">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="input-box">
+        <mat-form-field appearance="fill">
+          <mat-label>Hora Final</mat-label>
+            <input matInput type="time" name="end" [formControl]="endTimeControl" required>
+        </mat-form-field>
+      </div>
+
+      <div class="input-box">
+        <mat-form-field appearance="fill">
+          <mat-label>Sala com equipamentos</mat-label>
+          <mat-select [formControl]="equipamentosControl">
+            <mat-option [value]="false">Não</mat-option>
+              <mat-option [value]="true">Sim</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="input-group">
+
+
+
+
+    </div>
+
+    <div class="input-group">
+      <mat-form-field class="example-full-width">
+        <mat-label>Motivos de requisição</mat-label>
+        <textarea matInput placeholder="Ex. ..." rows="10" [formControl]="motivoControl"></textarea>
+      </mat-form-field>
+    </div>
+  <div class="input-group" style="display: flex;
+  justify-content: end;">
+    <button mat-raised-button color="primary" (click)="onSubmit()">Requisitar</button>
+  </div>
+</div>
+
+</div>

@@ -1,7 +1,7 @@
 <!--<h2 style="position: absolute; top: -50px; left: 50px; font-size: 20px;">Agendamentos</h2>-->
 <div class="home-section-text">Agendamentos</div>
 
-<div class="filters">
+<div class="filters"  *ngIf="showFilters()">
 
     <mat-form-field appearance="fill">
       <mat-label>Curso</mat-label>

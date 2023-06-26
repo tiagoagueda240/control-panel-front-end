@@ -1,0 +1,22 @@
+<div class="home-section-text" >Notificações</div>
+<div class="info">
+  <mat-card class="mat-elevation-z4" *ngFor="let request of requests"  >
+
+    <mat-card-content>
+
+      <div class="" style="display:flex; justify-content: space-between;"><p>Objetivo: {{request.type}}</p>  <p *ngIf="!isSecretariado(request.author.email)"> <b class="status-{{classNameSatus(request.status)}}">{{request.status}}</b></p> </div>
+      <p>{{haveEquipment(request.haveEquipment)}}</p>
+      <p>{{request.description}}</p>
+      <p><b>Autor:</b> {{request.author.name}} ({{ request.author.email }})</p>
+    </mat-card-content>
+
+    <mat-card-actions >
+      <button mat-icon-button (click)="onAccept(request)" *ngIf="isSecretariado(request.author.email)">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="updateStatus(request.id)" *ngIf="statusRecusado(request.status)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

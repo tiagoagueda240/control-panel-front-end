@@ -1,0 +1,65 @@
+<h1 class="popup-title" mat-dialog-title>{{ title }}</h1>
+<mat-divider [ngClass]="'dividor'"></mat-divider>
+
+<div mat-dialog-content>
+<div class="input-group">
+  <div class="input-box">
+    <mat-form-field  appearance="fill">
+      <mat-label>Sala</mat-label>
+      <input matInput placeholder="Ex. B.1.2" [formControl]="salaControl">
+    </mat-form-field>
+
+  </div>
+  <div class="input-box">
+    <mat-form-field  appearance="fill">
+      <mat-label>Ocupação</mat-label>
+      <input matInput placeholder="Ex. 20" type="number" [formControl]="ocupationLimitControl">
+    </mat-form-field>
+  </div>
+</div>
+<div class="input-group">
+  <div class="input-box">
+
+    <mat-form-field appearance="fill">
+      <mat-label>Tem equipamento?</mat-label>
+      <mat-select [formControl]="haveEquipmentControl">
+        <mat-option value="True">Sim</mat-option>
+        <mat-option value="False">Não</mat-option>
+
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="input-box">
+
+
+
+  </div>
+</div>
+
+
+
+<!--
+<div class="input-group">
+  <div class="input-box">
+    <mat-label>Hora Inicial</mat-label>
+    <input class="mat-input-element" type="text" placeholder="Nome">
+
+  </div>
+  <div class="input-box">
+    <mat-label>Hora Final</mat-label>
+    <mat-form-field appearance="fill">
+      <input matInput type="time" [(ngModel)]="end" name="end" [formControl]="endControl" required>
+    </mat-form-field>
+  </div>
+</div>
+-->
+
+
+
+
+
+<div mat-dialog-actions class="input-group">
+  <button mat-raised-button [ngClass]="'create-button'" color="warn" (click)="onNoClick()">Cancelar</button>
+  <button mat-raised-button [ngClass]="'create-button'" cdkFocusInitial (click)="onSubmit()">Criar</button>
+</div>
+</div>

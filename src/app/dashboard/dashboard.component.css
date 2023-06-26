@@ -8,10 +8,7 @@
   font-family: "Poppins" , sans-serif;
 }
 
-.fc-right .fc-prev-button, .fc-right .fc-next-button{
-  background-color: #b1d583;
-  background-image: none;
-}
+
 
 .sidebar{
   position: fixed;

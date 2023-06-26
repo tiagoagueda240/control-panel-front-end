@@ -19,8 +19,9 @@
     <mat-form-field appearance="fill">
       <mat-label>Tipologia de aula</mat-label>
       <mat-select [formControl]="typeControl">
-        <mat-option value="pratica">Prática</mat-option>
-        <mat-option value="teorica">Teórica</mat-option>
+        <div *ngFor="let tipologia of tipologiaUc">
+          <mat-option value={{tipologia}}>{{tipologia}}</mat-option>
+        </div>
       </mat-select>
     </mat-form-field>
   </div>
@@ -30,10 +31,9 @@
     <mat-form-field appearance="fill">
       <mat-label>Sala de Aula</mat-label>
       <mat-select [formControl]="classroomControl">
-        <div *ngFor="let classroom of classroomsName">
-          <mat-option value={{classroom}}>{{classroom}}</mat-option>
-        </div>
-
+        <mat-option *ngFor="let classroom of classroomsName" [value]="classroom">
+          {{ classroom }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -76,7 +76,7 @@
         <div class="input-box">
           <mat-form-field appearance="fill">
             <mat-label>Hora Inicial</mat-label>
-            <input matInput type="time" name="start" [formControl]="startTimeControl" required>
+            <input matInput type="time" name="start" [formControl]="startTimeControl" [value]="startTimeControl.value" required>
           </mat-form-field>
         </div>
         <div class="input-box">

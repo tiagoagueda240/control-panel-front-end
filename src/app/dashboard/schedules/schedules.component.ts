@@ -3,11 +3,9 @@ import { CalendarOptions, Calendar, DateSelectArg, EventApi, EventClickArg } fro
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
-import { FormControl, FormGroup } from '@angular/forms';
 import { SchoolClassService } from 'src/app/services/schoolClass.service';
 import { SchoolClass } from 'src/app/models/SchoolClass';
 import { Event } from 'src/app/models/Event';
-import { HttpClient } from '@angular/common/http';
 import { TimeSchedule } from '../../models/TimeSchedule';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateScheduleComponent } from './create-schedule/create-schedule.component';
@@ -16,7 +14,9 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import * as XLSX from 'xlsx';
-import { InfoScheduleComponent } from './info-schedule copy/info-schedule.component';
+import { InfoScheduleComponent } from './info-schedule/info-schedule.component';
+import { SchedulesService } from 'src/app/services/schedules.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -40,12 +40,11 @@ export class SchedulesComponent implements OnInit {
   clear: boolean = false
 
 
-  constructor(private dialog: MatDialog, private http: HttpClient, private route: ActivatedRoute, private userService: UserService, private router: Router, private schoolClassService: SchoolClassService) {
+  constructor(private _snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute, private userService: UserService, private schoolClassService: SchoolClassService, private schedulesService: SchedulesService) {
     this.cursos = new Set<String>()
     this.anos = new Set<String>()
     this.turmas = new Set<String>()
-
-
+    this.isSecretariado()
 
   }
 
@@ -72,13 +71,10 @@ export class SchedulesComponent implements OnInit {
       week:     'Semana',
       day:      'Dia',
       list:     'Lista',
-    },/*
-    validRange: {
-      start: new Date().toISOString().split("T")[0]
-    },*/
-    editable: true,
-    selectable: true,
-    selectMirror: true,
+    },
+    editable:false,
+    selectable: false,
+    selectMirror: false,
     dayMaxEvents: true,
     slotMinTime: '06:00:00',
     select: this.handleDateSelect.bind(this),
@@ -121,10 +117,12 @@ export class SchedulesComponent implements OnInit {
 
   colocaHorario(){
     this.timeSchedules = [];
-    this.http.get<TimeSchedule[]>('http://localhost:3000/time-schedule')
+    this.schedulesService.getTimeSchedules()
     .subscribe((data: TimeSchedule[]) => {
       this.timeSchedules = data;
-      const events = data.map(evento => ({
+      console.log(data)
+
+      var events = data.map(evento => ({
             groupId: evento.id.toString(),
             title: evento.curricularUnit.name,
             startRecur: evento.startRecur + "T" + evento.startTime,
@@ -138,7 +136,12 @@ export class SchedulesComponent implements OnInit {
             organizer: evento.teacher,
             location: evento.classroom,
       }));
-      this.calendarOptions.events = events;
+
+      if(this.selectedSchoolClass != null){
+        this.searchTimeSchedules()
+      }else{
+        this.calendarOptions.events = events;
+      }
     });
   }
 
@@ -155,108 +158,129 @@ export class SchedulesComponent implements OnInit {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-
-    if(this.selectedSchoolClass != ""){
-      const dialogRef = this.dialog.open(CreateScheduleComponent, {
-        width: '700px',
-        data: { start: selectInfo.startStr, end: selectInfo.endStr, day: selectInfo.start, schoolClass: this.selectedSchoolClass }
-      });   // const title = prompt('Please enter a new title for your event');
-
-      dialogRef.afterClosed().subscribe(result => {
-        // ação a ser executada após o dialog ser fechado
-        if(result != "cancelou"){
-          //this.colocaHorario()
-
-        }
-      });
-
-    }else{
-      alert("Selecione uma turma")
+    if (!this.selectedSchoolClass) {
+      //alert('Selecione uma turma');
+      this._snackBar.open('Selecione uma turma', 'Fechar');
       const calendarApi = selectInfo.view.calendar;
       calendarApi.unselect(); // clear date selection
+      return;
     }
 
+    const dialogRef = this.dialog.open(CreateScheduleComponent, {
+      width: '700px',
+      data: {
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        day: selectInfo.start,
+        schoolClass: this.selectedSchoolClass
+      },
+    });
 
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result !== 'cancelou') {
+        this.colocaHorario();
+      }
+    });
   }
 
-
   handleEventClick(clickInfo: EventClickArg) {
-    console.log(clickInfo.event.groupId)
-    console.log(clickInfo)
+    const { event } = clickInfo;
 
-      const dialogRef = this.dialog.open(InfoScheduleComponent, {
-        width: '700px',
-        data: { id: clickInfo.event.groupId }
-      });   // const title = prompt('Please enter a new title for your event');
+    console.log(event.groupId);
+    console.log(clickInfo.event.groupId);
 
-      dialogRef.afterClosed().subscribe(result => {
-        // ação a ser executada após o dialog ser fechado
-        if(result == "editar"){
-          const dialogRef = this.dialog.open(CreateScheduleComponent, {
-            width: '700px',
-            data: {timeScheduleId: clickInfo.event.groupId }
-          });
+    const dialogRef = this.dialog.open(InfoScheduleComponent, {
+      width: '700px',
+      data: { id: event.groupId,
+        functionType: this.user.functionType
+      },
+    });
 
-        }
-      });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'editar') {
+        const dialogRef = this.dialog.open(CreateScheduleComponent, {
+          width: '700px',
+          data: { timeScheduleId: event.groupId },
+        });
 
+      } else if (result === 'eliminado') {
+
+      }
+      this.colocaHorario();
+      this.searchTimeSchedules();
+    });
   }
 
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
   }
 
-
   courseSelected() {
-    this.anos.clear()
-    this.turmas.clear()
-    this.clear = true
+    this.anos.clear();
+    this.turmas.clear();
+    this.clear = true;
+
     this.timeSchedules.forEach((info) => {
-      if(this.selectedCourse === info.schoolClass.course.name){
-        this.anos.add(info.schoolClass.year.toString())
+      if (this.selectedCourse === info.schoolClass.course.name) {
+        this.anos.add(info.schoolClass.year.toString());
       }
-    })
+    });
   }
 
   yearSelected() {
-    this.turmas.clear()
+    this.turmas.clear();
+
     this.timeSchedules.forEach((info) => {
-      if(this.selectedYear=== info.schoolClass.year.toString() && this.selectedCourse ===  info.schoolClass.course.name){
-        this.turmas.add(info.schoolClass.name)
+      if (
+        this.selectedYear === info.schoolClass.year.toString() &&
+        this.selectedCourse === info.schoolClass.course.name
+      ) {
+        this.turmas.add(info.schoolClass.name);
       }
-    })
+    });
   }
 
-
   searchTimeSchedules() {
+    //console.log(this.selectedYear === this.timeSchedules[0].schoolClass.year.toString())
     const eventosFormatados = this.timeSchedules
-      .map(evento => {
-        if (
-          (this.selectedYear == null  || this.selectedYear === evento.schoolClass.year.toString()) &&
+      .filter(
+        (evento) =>
+          (!this.selectedYear ||
+            this.selectedYear === evento.schoolClass.year.toString()) &&
           this.selectedCourse === evento.schoolClass.course.name &&
-          (this.selectedSchoolClass == null || this.selectedSchoolClass === evento.schoolClass.name)
-        ) {
-          return {
-            groupId: evento.id.toString(),
-            title: evento.curricularUnit.name,
-            startRecur: evento.startRecur + "T" + evento.startTime,
-            endRecur: evento.endRecur + "T" + evento.endTime,
-            daysOfWeek: evento.daysOfWeek, // eventos nos finais de semana
-            startTime: evento.startTime,
-            endTime: evento.endTime,
-            overlap: false, // impede eventos sobrepostos
-            color: evento.curricularUnit.color, // cor do evento
-            textColor: '#fff', // cor do texto
-            organizer: evento.teacher,
-            location: evento.classroom
-          };
-        }
-        return undefined;
-      })
-      .filter(evento => evento !== undefined) // remove valores indefinidos
-      .map(evento => evento!); // converte cada objeto em um EventInput
+          (!this.selectedSchoolClass ||
+            this.selectedSchoolClass === evento.schoolClass.name)
+      )
+      .map((evento) => (
+        console.log({
+          groupId: evento.id.toString(),
+          title: evento.curricularUnit.name,
+          startRecur: `${evento.startRecur}T${evento.startTime}`,
+          endRecur: `${evento.endRecur}T${evento.endTime}`,
+          daysOfWeek: evento.daysOfWeek,
+          startTime: evento.startTime,
+          endTime: evento.endTime,
+          overlap: false,
+          color: evento.curricularUnit.color,
+          textColor: '#fff',
+          organizer: evento.teacher,
+          location: evento.classroom,
+        }),
+        {
+        groupId: evento.id.toString(),
+        title: evento.curricularUnit.name,
+        startRecur: `${evento.startRecur}T${evento.startTime}`,
+        endRecur: `${evento.endRecur}T${evento.endTime}`,
+        daysOfWeek: evento.daysOfWeek,
+        startTime: evento.startTime,
+        endTime: evento.endTime,
+        overlap: false,
+        color: evento.curricularUnit.color,
+        textColor: '#fff',
+        organizer: evento.teacher,
+        location: evento.classroom,
+      }));
 
-    // atualiza a propriedade events do calendário
     this.calendarOptions.events = eventosFormatados;
   }
 
@@ -319,6 +343,100 @@ export class SchedulesComponent implements OnInit {
     window.URL.revokeObjectURL(url);
 }
 
+showFilters(): Boolean{
+  if("aluno" == this.user.functionType){
 
+      this.selectedYear = this.user.schoolClass.year
+      this.selectedCourse = this.user.schoolClass.courseId
+      this.selectedSchoolClass = this.user.schoolClass.name
+
+
+    this.searchTimeSchedules()
+  }
+  return !("aluno" == this.user.functionType)
+}
+
+isSecretariado(){
+
+  this.userService.infosUserByEmail(this.userService.getUser().email).then(user => {
+    console.log(user)
+    this.user = user
+    console.log("secretariado" == user.functionType)
+
+    if(!"secretariado" == user.functionType){
+      this.calendarOptions = {
+        plugins: [
+          interactionPlugin,
+          dayGridPlugin,
+          timeGridPlugin,
+          listPlugin,
+        ],
+
+        headerToolbar: {
+          left: 'prevYear,prev,next,nextYear today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        initialView: 'timeGridWeek',
+        weekends: true,
+        locale: 'pt-br',
+        buttonText: {
+          today:    'Hoje',
+          month:    'Mês',
+          week:     'Semana',
+          day:      'Dia',
+          list:     'Lista',
+        },
+        editable:false,
+        selectable: false,
+        selectMirror: false,
+        dayMaxEvents: true,
+        slotMinTime: '06:00:00',
+        select: this.handleDateSelect.bind(this),
+        eventClick: this.handleEventClick.bind(this),
+        eventsSet: this.handleEvents.bind(this)
+      };
+    }else{
+      this.calendarOptions = {
+        plugins: [
+          interactionPlugin,
+          dayGridPlugin,
+          timeGridPlugin,
+          listPlugin,
+        ],
+
+        headerToolbar: {
+          left: 'prevYear,prev,next,nextYear today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        initialView: 'timeGridWeek',
+        weekends: true,
+        locale: 'pt-br',
+        buttonText: {
+          today:    'Hoje',
+          month:    'Mês',
+          week:     'Semana',
+          day:      'Dia',
+          list:     'Lista',
+        },
+        editable:false,
+        selectable: true,
+        selectMirror: true,
+        dayMaxEvents: true,
+        slotMinTime: '06:00:00',
+        select: this.handleDateSelect.bind(this),
+        eventClick: this.handleEventClick.bind(this),
+        eventsSet: this.handleEvents.bind(this)
+      };
+    }
+
+  })
+  .catch(error => {
+    console.error('Erro:', error);
+  });
+}
 
 }
+
+

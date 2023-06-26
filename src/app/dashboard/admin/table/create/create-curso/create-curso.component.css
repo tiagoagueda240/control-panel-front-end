@@ -1,0 +1,45 @@
+.custom-dialog {
+  max-width: 10000px !important;
+  min-width: 7000px !important;
+}
+
+.popup-title{
+    text-align: center;
+    font-weight: 900;
+    font-size: 25px;
+    color: #10497e;
+}
+.input-group {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.dividor{
+    margin-bottom: 30px;
+}
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+    margin:0 10px;
+    margin-bottom: 1.1rem;
+}
+
+
+.create-button{
+    width: 200px;
+}
+
+.input-box {
+  width: 50%;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-option {
+  font-size: 10px; /* Tamanho da fonte desejado */
+  padding-top: 8px;
+}
+
