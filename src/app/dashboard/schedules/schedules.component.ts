@@ -385,6 +385,9 @@ isSecretariado(){
 
     this.functionType = user.functionType
 
+    console.log(user.schoolClass)
+    console.log("ola")
+
     this.courseService.getCourseById(user.schoolClass[0].courseId)
     .subscribe((data: any) => {
       console.log(data)
