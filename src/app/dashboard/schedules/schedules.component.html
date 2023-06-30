@@ -1,7 +1,7 @@
 <!--<h2 style="position: absolute; top: -50px; left: 50px; font-size: 20px;">Agendamentos</h2>-->
 <div class="home-section-text">Agendamentos</div>
 
-<div class="filters"  *ngIf="showFilters()">
+<div class="filters"  *ngIf="showFilters() && naoAluno()">
 
     <mat-form-field appearance="fill">
       <mat-label>Curso</mat-label>
@@ -37,7 +37,7 @@
     <button *ngIf="clear" mat-fab matTooltip="Limpar filtros" aria-label="Limpar filtros" color="grey" (click)="cleanFilters()">
       <mat-icon>close</mat-icon>
     </button>
-    <button mat-mini-fab matTooltip="Exportar excel" aria-label="Exportar excel" (click)="exportXLSX()">
+    <button mat-mini-fab matTooltip="Exportar excel" aria-label="Exportar excel" (click)="exportXLSX()" *ngIf="secretariado()">
       <mat-icon>file_present</mat-icon>
     </button>
 </div>

@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { map, Observable, tap } from 'rxjs';
-import { Course } from '../models/course';
+import { Observable } from 'rxjs';
 import { Classroom } from '../models/Classroom';
+import { CLASSROOM, CLASSROOM_BLOCK } from 'src/servicesConstants';
 
 
 
@@ -12,12 +11,11 @@ import { Classroom } from '../models/Classroom';
 })
 export class ClassroomService {
 
-  constructor(private httpClient: HttpClient, private router: Router) { }
+  constructor(private httpClient: HttpClient) { }
 
 
   public getClassrooms(): Promise<any> {
-    const url = 'http://localhost:3000/classroom';
-    return this.httpClient.get(url)
+    return this.httpClient.get(CLASSROOM)
     .toPromise()
     .then(
       (resposta: any) => resposta
@@ -25,8 +23,7 @@ export class ClassroomService {
 }
 
 public getClassroom(): Promise<any> {
-  const url = 'http://localhost:3000/classroom/block';
-  return this.httpClient.get(url)
+  return this.httpClient.get(CLASSROOM_BLOCK)
   .toPromise()
   .then(
     (resposta: any) => resposta
@@ -34,20 +31,16 @@ public getClassroom(): Promise<any> {
 }
 
 deleteClassroom(id: string): Observable<any> {
-  return this.httpClient.delete(`http://localhost:3000/classroom/${id}`);
+  return this.httpClient.delete(`${CLASSROOM}/${id}`);
 }
 
 addClassroom(classroom: any) {
-  const url = 'http://localhost:3000/classroom';
-
-  return this.httpClient.post<Classroom>(url, classroom)
+  return this.httpClient.post<Classroom>(CLASSROOM, classroom)
 
 }
 
 editClassroom(classroom: any, id: number) {
-  const url = `http://localhost:3000/classroom/${id}`;
-
-  return this.httpClient.patch<Classroom>(url, classroom)
+  return this.httpClient.patch<Classroom>(`${CLASSROOM}/${id}`, classroom)
 
 }
 

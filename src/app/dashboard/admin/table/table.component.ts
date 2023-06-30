@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
@@ -16,6 +16,7 @@ import { EditUCDialogComponent } from './edit/edit-uc/edit-uc.component';
 import { ClassroomService } from 'src/app/services/classroom.service';
 import { CreateSalaDialogComponent } from './create/create-sala/create-sala.component';
 import { EditSalaDialogComponent } from './edit/edit-sala/edit-sala.component';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-table',
@@ -24,11 +25,14 @@ import { EditSalaDialogComponent } from './edit/edit-sala/edit-sala.component';
 })
 export class TableComponent {
   dataLength: any;
+  @ViewChild(MatPaginator) paginator: MatPaginator; // Referência para o MatPaginator
+  pageSizeOptions = [5, 10, 25, 100] as const;
 
   constructor(private _snackBar: MatSnackBar, private curricularUnitService: CurricularUnitService, private courseService: CourseService, private userService: UserService, private classroomService: ClassroomService, public dialog: MatDialog) {
   }
 
   public searchTerm$ = new Subject<string>();
+
 
 getAllRecords() {
 throw new Error('Method not implemented.');
@@ -47,95 +51,51 @@ public curricularUnits: any[] = []
 @Input() type: string = ""
 
 ngOnInit(): void {
-
-  if(this.type == "alunos"){
-    this.displayedColumns = [
-      'nome',
-      'numero',
-      'email',
-      'options'
-  ];
-
-  this.userService.getAlunos().then(response => {
-    this.dataLength = response.length;
-    this.dataSource.data = response;
-  })
-  }else if(this.type == "docentes"){
-
-  this.displayedColumns = [
-    'nome',
-    'numero',
-    'email',
-    'vinculo',
-    'maxHours',
-    'minHours',
-    'options'
-];
-
-this.userService.getProfessores().then(response => {
-  this.dataLength = response.length;
-  this.dataSource.data = response;
-})
-
-  }else if(this.type == "ucs"){
-
-    this.displayedColumns = [
-      'nome',
-      'ects',
-      'curricularYear',
-      'semestre',
-      'ciclo',
-      'horasPraticas',
-      'horasTeoricas',
-      'options'
-  ];
-
-  this.curricularUnitService.getCurricularUnit().then(response => {
-    this.dataLength = response.length;
-    this.dataSource.data = response;
-})
-
-
-  }else if(this.type == "cursos"){
-    this.displayedColumns = [
-      'nome',
-      'acronym',
-      'studyCycle',
-      'options'
-  ];
-
-  this.courseService.getCourses().then(response => {
-    this.dataLength = response.length;
-    this.dataSource.data = response;
-})
-  }else if(this.type == "salas"){
-    this.displayedColumns = [
-      'sala',
-      'ocupacionLimit',
-      'haveEquipment',
-      'options'
-
-  ];
-  this.classroomService.getClassrooms().then(response => {
-    console.log(response)
-    this.dataLength = response.length;
-
-    const lista = [];
-
-    for(let i = 0; i < response.length; i++){
-      const object = {
-        sala: response[i].block + "." + response[i].floor + "." + response[i].classroomNumber,
-        ocupacionLimit: response[i].ocupationLimit,
-        haveEquipment: response[i].haveEquipment
+  if (this.type == "alunos") {
+    this.displayedColumns = ['nome', 'numero', 'email', 'options'];
+    this.userService.getAlunos().then(response => {
+      this.dataSource.data = response;
+      this.dataLength = response.length;
+      this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
+    });
+  } else if (this.type == "docentes") {
+    this.displayedColumns = ['nome', 'numero', 'email', 'vinculo', 'maxHours', 'minHours', 'options'];
+    this.userService.getProfessores().then(response => {
+      this.dataSource.data = response;
+      this.dataLength = response.length;
+      this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
+    });
+  } else if (this.type == "ucs") {
+    this.displayedColumns = ['nome', 'ects', 'curricularYear', 'semestre', 'ciclo', 'horasPraticas', 'horasTeoricas', 'options'];
+    this.curricularUnitService.getCurricularUnit().then(response => {
+      this.dataSource.data = response;
+      this.dataLength = response.length;
+      this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
+    });
+  } else if (this.type == "cursos") {
+    this.displayedColumns = ['nome', 'acronym', 'studyCycle', 'options'];
+    this.courseService.getCourses().then(response => {
+      this.dataSource.data = response;
+      this.dataLength = response.length;
+      this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
+    });
+  } else if (this.type == "salas") {
+    this.displayedColumns = ['sala', 'ocupacionLimit', 'haveEquipment', 'options'];
+    this.classroomService.getClassrooms().then(response => {
+      const lista = [];
+      for (let i = 0; i < response.length; i++) {
+        const object = {
+          sala: response[i].block + "." + response[i].floor + "." + response[i].classroomNumber,
+          ocupacionLimit: response[i].ocupationLimit,
+          haveEquipment: response[i].haveEquipment
+        };
+        lista.push(object);
       }
-      lista.push(object);
-    }
-
-    this.dataSource.data = lista
-})
+      this.dataSource.data = lista;
+      this.dataLength = lista.length;
+      this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
+    });
   }
-
-
 }
 
 onDelete(row: any){

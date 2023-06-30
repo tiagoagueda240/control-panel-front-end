@@ -51,10 +51,10 @@ onSubmit() {
 
 }
 onNoClick() {
-throw new Error('Method not implemented.');
+  this.dialogRef.close(false);
 }
 
-  title = "Adicionar curso"
+  title = "Adicionar sala de aula"
   salaControl = new FormControl('');
   ocupationLimitControl = new FormControl('');
   haveEquipmentControl = new FormControl('');

@@ -65,10 +65,10 @@ export class EditUCDialogComponent {
     }
 
 onNoClick() {
-throw new Error('Method not implemented.');
+  this.dialogRef.close(false);
 }
 
-  title = "Adicionar Unidade Curricular"
+  title = "Editar Unidade Curricular"
   nameControl = new FormControl('');
   ectsControl = new FormControl('');
   yearControl = new FormControl('');

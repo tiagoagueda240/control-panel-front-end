@@ -28,7 +28,8 @@ onSubmit() {
     semestre: parseInt(this.semestreControl.value!!, 10),
     ciclo: parseInt(this.cicleControl.value!!, 10),
     horasPraticas: parseFloat(this.practicalHoursControl.value!!),
-    horasTeoricas: parseFloat(this.theoreticalHoursControl.value!!)
+    horasTeoricas: parseFloat(this.theoreticalHoursControl.value!!),
+    color: this.gerarCorHexAleatoria()
 
   });
 
@@ -47,8 +48,17 @@ onSubmit() {
 
 
 }
+
+ gerarCorHexAleatoria(): string {
+  const r = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+  const g = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+  const b = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+
+  return `#${r}${g}${b}`;
+}
+
 onNoClick() {
-throw new Error('Method not implemented.');
+  this.dialogRef.close(false);
 }
 
   title = "Adicionar Unidade Curricular"

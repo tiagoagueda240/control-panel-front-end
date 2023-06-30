@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Course } from '../models/course';
+import { COURSE } from 'src/servicesConstants';
 
 
 
@@ -15,30 +16,29 @@ export class CourseService {
 
 
   public getCourses(): Promise<any> {
-    const url = 'http://localhost:3000/course';
-    return this.httpClient.get(url)
+    return this.httpClient.get(COURSE)
     .toPromise()
     .then(
       (resposta: any) => resposta
     )
 }
 
+
+getCourseById(id: string): Observable<any> {
+  return this.httpClient.get<any>(`${COURSE}/${id}`);
+}
+
 deleteCourse(id: string): Observable<any> {
-  return this.httpClient.delete(`http://localhost:3000/course/${id}`);
+  return this.httpClient.delete(`${COURSE}/${id}`);
 }
 
 addCourse(course: any) {
-  const url = 'http://localhost:3000/course';
-
-  return this.httpClient.post<Course>(url, course)
+  return this.httpClient.post<Course>(COURSE, course)
 
 }
 
 editCourse(course: any, id: number) {
-  const url = `http://localhost:3000/course/${id}`;
-
-  return this.httpClient.patch<Course>(url, course)
-
+  return this.httpClient.patch<Course>(`${COURSE}/${id}`, course)
 }
 
 

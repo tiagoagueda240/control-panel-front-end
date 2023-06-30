@@ -5,6 +5,7 @@ import { RequestUser } from '../models/RequestUser';
 import { ResponseLogin } from '../models/ResponseLogin';
 import { User } from '../models/user';
 import jwt_decode from 'jwt-decode';
+import { USER, USER_BY_EMAIL } from 'src/servicesConstants';
 
 
 @Injectable({
@@ -19,7 +20,7 @@ export class UserService {
 
     public infosUserByEmail(email: string): Promise<any>{
       return this.httpClient.get<User>(
-        "http://localhost:3000/users/email/" + email
+        USER_BY_EMAIL + email
       ).toPromise()
       .then(
         (resposta: any) => resposta
@@ -36,8 +37,7 @@ export class UserService {
     }
 
     public async getProfessores(): Promise<User[]> {
-      const url = 'http://localhost:3000/users';
-      const users = await this.httpClient.get<User[]>(url).toPromise();
+      const users = await this.httpClient.get<User[]>(USER).toPromise();
       if (users) {
         return users.filter((user) => user.functionType === 'professor');
       } else {
@@ -46,8 +46,7 @@ export class UserService {
     }
 
     public async getAlunos(): Promise<User[]> {
-      const url = 'http://localhost:3000/users';
-      const users = await this.httpClient.get<User[]>(url).toPromise();
+      const users = await this.httpClient.get<User[]>(USER).toPromise();
       if (users) {
         return users.filter((user) => user.functionType === 'aluno');
       } else {
@@ -56,21 +55,15 @@ export class UserService {
     }
 
     deleteUser(id: string): Observable<any> {
-      return this.httpClient.delete(`http://localhost:3000/users/${id}`);
+      return this.httpClient.delete(`${USER}/${id}`);
     }
 
     addUser(user: any) {
-      const url = 'http://localhost:3000/users';
-
-      return this.httpClient.post<any>(url, user)
-
+      return this.httpClient.post<any>(USER, user)
     }
 
     editUser(user: any, id: number) {
-      const url = `http://localhost:3000/users/${id}`;
-
-      return this.httpClient.patch<any>(url, user)
-
+      return this.httpClient.patch<any>(`${USER}/${id}`, user)
     }
 
 }

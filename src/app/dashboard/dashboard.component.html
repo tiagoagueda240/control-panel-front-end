@@ -14,9 +14,11 @@
     </li>
 
     <li>
-      <a class="menu" routerLink="/dashboard/schedules">
+      <a class="menu" routerLink="/dashboard/schedules" >
        <i class='bx bxs-calendar-plus'></i>
-        <span class="links_name">Agendamentos</span>
+        <span class="links_name" *ngIf="isSecretariado()">Agendamentos</span>
+        <span class="links_name" *ngIf="!isSecretariado()">Horário</span>
+
       </a>
       <span class="tooltip">Agendamentos</span>
     </li>
@@ -45,7 +47,7 @@
      <span class="tooltip">Setting</span>
    </li>
    <li>
-    <a class="menu" href="/dashboard/admin">
+    <a class="menu" href="/dashboard/admin" *ngIf="isSecretariado()">
       <i class='bx bx-folder' ></i>
       <span class="links_name">Administração</span>
     </a>

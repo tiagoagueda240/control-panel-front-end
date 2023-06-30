@@ -1,3 +1,4 @@
+
 export class User{
   id: number;
   name: string;
@@ -8,4 +9,11 @@ export class User{
   maxHours: number;
   minHours: number;
   requests: any[];
+  schoolClass: {
+    id: number;
+    studyCycle: number;
+    name: string;
+    year: number;
+    courseId: number;
+  };;
 }

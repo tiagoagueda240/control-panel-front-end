@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { RequestClassroom } from '../models/RequestClassroom';
+import { REQUEST, REQUEST_CLASSROOM, REQUEST_STATUS } from 'src/servicesConstants';
 
 @Injectable({
   providedIn: 'root'
@@ -12,32 +13,26 @@ export class RequestService {
 
 
   sendRequest(request: any) {
-    const url = 'http://localhost:3000/requests';
-
-    return this.httpClient.post(url, request)
-
+    return this.httpClient.post(REQUEST, request)
   }
 
   editRequestStatus(status: string, id: number) {
-    const url = `http://localhost:3000/requests/status/${id}`;
     const requestBody = {
       status: status,
     };
-    return this.httpClient.patch<any>(url, requestBody)
+    return this.httpClient.patch<any>(`${REQUEST_STATUS}/${id}`, requestBody)
   }
 
   editRequestClassroom(status: string, id: number, classroom: string) {
-    const url = `http://localhost:3000/requests/classroom/${id}`;
     const requestBody = {
       status: status,
       classroom: classroom
     };
-    return this.httpClient.patch<any>(url, requestBody)
+    return this.httpClient.patch<any>(`${REQUEST_CLASSROOM}/${id}`, requestBody)
   }
 
   getRequests(): Promise<any> {
-    const url = 'http://localhost:3000/requests';
-    return this.httpClient.get(url)
+    return this.httpClient.get(REQUEST)
     .toPromise()
     .then(
       (resposta: any) => resposta
@@ -45,7 +40,7 @@ export class RequestService {
 }
 
 deleteRequest(id: number): Observable<any> {
-  return this.httpClient.delete(`http://localhost:3000/requests/${id}`);
+  return this.httpClient.delete(`${REQUEST}/${id}`);
 }
 
 }

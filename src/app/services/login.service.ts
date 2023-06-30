@@ -5,6 +5,7 @@ import { map, Observable, tap } from 'rxjs';
 import { RequestLogin } from '../models/RequestLogin';
 import { ResponseLogin } from '../models/ResponseLogin';
 import { UserService } from './user.service';
+import { LOGIN } from 'src/servicesConstants';
 
 
 @Injectable({
@@ -19,7 +20,7 @@ export class LoginService {
   public doLogin(requestLogin: RequestLogin){
 
 
-    return this.httpClient.post<ResponseLogin>("http://localhost:3000/login", requestLogin )
+    return this.httpClient.post<ResponseLogin>(LOGIN, requestLogin )
     .pipe(map(user => {
       // store user details jwt token in localStorage
       localStorage.setItem('access_token', user.access_token)

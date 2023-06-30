@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
+import { SCHOOLCLASS } from 'src/servicesConstants';
 
 
 
@@ -14,8 +15,7 @@ export class SchoolClassService {
 
 
   public getSchoolClasses(): Promise<any> {
-    const url = 'http://localhost:3000/school-class';
-    return this.httpClient.get(url)
+    return this.httpClient.get(SCHOOLCLASS)
     .toPromise()
     .then(
       (resposta: any) => resposta

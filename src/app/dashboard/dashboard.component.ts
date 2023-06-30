@@ -14,8 +14,17 @@ export class DashboardComponent implements OnInit {
   public user: User;
   public numero: string;
   public privilegios: boolean;
+    functionType: String;
 
-  constructor(private route: ActivatedRoute, private userService: UserService, private loginService: LoginService) { }
+
+  constructor(private route: ActivatedRoute, private userService: UserService, private loginService: LoginService) {
+    this.userService.infosUserByEmail(this.userService.getUser().email).then(user => {
+      this.functionType = user.functionType
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+    });
+  }
 
 
   ngOnInit(): void {
@@ -55,13 +64,10 @@ export class DashboardComponent implements OnInit {
   }
 
   isSecretariado(): Boolean{
-    this.userService.infosUserByEmail(this.userService.getUser().email).then(user => {
-      this.user = user
-    })
-    .catch(error => {
-      console.error('Erro:', error);
-    });
-    return "secretariado" == this.user.functionType
+
+    return "secretariado" == this.functionType
+
+   return true
   }
 
   public logout(){

@@ -107,7 +107,7 @@ export class NotificationsComponent implements OnInit {
     updateStatus(id: number){
 
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-        data: 'Tem a certeza que deseja excluir este horário?',
+        data: 'Tem a certeza que deseja recusar?',
       });
 
       dialogRef.afterClosed().subscribe((result) => {

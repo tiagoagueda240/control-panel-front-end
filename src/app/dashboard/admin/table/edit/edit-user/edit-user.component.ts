@@ -49,7 +49,7 @@ export class EditUserDialogComponent {
     );
   }
 onNoClick() {
-throw new Error('Method not implemented.');
+  this.dialogRef.close(false);
 }
 
   title = ""

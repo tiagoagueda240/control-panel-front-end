@@ -17,6 +17,7 @@ import * as XLSX from 'xlsx';
 import { InfoScheduleComponent } from './info-schedule/info-schedule.component';
 import { SchedulesService } from 'src/app/services/schedules.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CourseService } from 'src/app/services/course.service';
 
 
 @Component({
@@ -38,9 +39,10 @@ export class SchedulesComponent implements OnInit {
   eventList: Event[] = []
   timeSchedules: TimeSchedule[] = []
   clear: boolean = false
+  functionType: String
 
 
-  constructor(private _snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute, private userService: UserService, private schoolClassService: SchoolClassService, private schedulesService: SchedulesService) {
+  constructor(private _snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute, private userService: UserService, private schoolClassService: SchoolClassService, private schedulesService: SchedulesService, private courseService: CourseService) {
     this.cursos = new Set<String>()
     this.anos = new Set<String>()
     this.turmas = new Set<String>()
@@ -303,12 +305,22 @@ export class SchedulesComponent implements OnInit {
             "Docente": info.teacher.name,
             "  ": info.teacher.number,
             "Horas Semanais": this.calculateHours(info.startTime, info.endTime),
-            "Data início": info.startRecur,
-            "Data fim": info.endRecur,
+            "Data início": info.startRecur.slice(0,10),
+            "Data fim": info.endRecur.slice(0,10),
         })),
     ]);
 
-    worksheet["A2"] = { t: "s", v: "1D1" };
+    worksheet["A2"] = {
+      t: "s",
+      v: "1D1",
+      s: {
+        fill: {
+          fgColor: {
+            rgb: "0000FF" // Código RGB para a cor azul
+          }
+        }
+      }
+    };
     worksheet["!merges"] = [
         { s: { r: 0, c: 1 }, e: { r: 0, c: 2 } },
         { s: { r: 0, c: 3 }, e: { r: 0, c: 4 } },
@@ -356,14 +368,37 @@ showFilters(): Boolean{
   return !("aluno" == this.user.functionType)
 }
 
+secretariado(): Boolean{
+  return "secretariado" == this.functionType
+}
+
+naoAluno(){
+  return "aluno" != this.functionType
+
+}
+
 isSecretariado(){
+  console.log(this.userService.getUser().email)
 
   this.userService.infosUserByEmail(this.userService.getUser().email).then(user => {
     console.log(user)
-    this.user = user
-    console.log("secretariado" == user.functionType)
 
-    if(!"secretariado" == user.functionType){
+    this.functionType = user.functionType
+
+    this.courseService.getCourseById(user.schoolClass[0].courseId)
+    .subscribe((data: any) => {
+      console.log(data)
+      if(data != null){
+        this.selectedYear = user.schoolClass[0].year.toString()
+        this.selectedCourse = data.name
+        this.selectedSchoolClass = user.schoolClass[0].name
+        this.searchTimeSchedules()
+
+      }
+
+    });
+
+    if(!("secretariado" == this.functionType)){
       this.calendarOptions = {
         plugins: [
           interactionPlugin,

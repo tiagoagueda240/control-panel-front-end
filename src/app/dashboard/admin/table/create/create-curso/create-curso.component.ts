@@ -47,10 +47,10 @@ onSubmit() {
 
 }
 onNoClick() {
-throw new Error('Method not implemented.');
+  this.dialogRef.close(false);
 }
 
-  title = "Adicionar sala"
+  title = "Adicionar curso"
   nameControl = new FormControl('');
   acronymControl = new FormControl('');
   cicleControl = new FormControl('');

@@ -1,7 +1,7 @@
 export class RequestClassroom{
     public id!: number;
-    public requestStartDate!: Date;
-    public requestFinishDate!: Date;
+    public requestStartDate!: string;
+    public requestFinishDate!: string;
     public type!: string;
     public haveEquipment!: Boolean;
     public description!: string;

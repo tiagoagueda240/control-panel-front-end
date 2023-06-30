@@ -47,8 +47,8 @@ export class InfoScheduleComponent{
       this.title = timeSchedule.curricularUnit.name;
 
       this.classroom = timeSchedule.classroom.block + "." + timeSchedule.classroom.floor + "." + timeSchedule.classroom.classroomNumber
-      this.time = timeSchedule.startTime + " | " + timeSchedule.endTime
-      this.days = timeSchedule.startRecur + " | " + timeSchedule.endRecur
+      this.time = timeSchedule.startTime.slice(0,5) + " | " + timeSchedule.endTime.slice(0,5)
+      this.days = timeSchedule.startRecur.slice(0,10) + " | " + timeSchedule.endRecur.slice(0,10)
       this.curricularUnitEcts = timeSchedule.curricularUnit.ects.toString()
       this.curricularUnitSemestre = timeSchedule.curricularUnit.semestre.toString()
 

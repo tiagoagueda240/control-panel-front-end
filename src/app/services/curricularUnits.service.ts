@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 import { UC } from '../models/UC';
+import { CURRICULAR_UNITS } from 'src/servicesConstants';
 
 
 
@@ -15,8 +16,7 @@ export class CurricularUnitService {
 
 
   getCurricularUnit(): Promise<any> {
-    const url = 'http://localhost:3000/curricular-units';
-    return this.httpClient.get(url)
+    return this.httpClient.get(CURRICULAR_UNITS)
     .toPromise()
     .then(
       (resposta: any) => resposta
@@ -24,20 +24,16 @@ export class CurricularUnitService {
 }
 
 addUC(uc: any) {
-  const url = 'http://localhost:3000/curricular-units';
-
-  return this.httpClient.post<UC>(url, uc)
+  return this.httpClient.post<UC>(CURRICULAR_UNITS, uc)
 
 }
 
 editUC(uc: any, id: number) {
-  const url = `http://localhost:3000/curricular-units/${id}`;
-
-  return this.httpClient.patch<UC>(url, uc)
+  return this.httpClient.patch<UC>(`${CURRICULAR_UNITS}/${id}`, uc)
 }
 
 deleteCurricularUnit(id: string): Observable<any> {
-  return this.httpClient.delete(`http://localhost:3000/curricular-units/${id}`);
+  return this.httpClient.delete(`${CURRICULAR_UNITS}/${id}`);
 }
 
 

@@ -51,7 +51,7 @@ onSubmit() {
   );
 }
 onNoClick() {
-throw new Error('Method not implemented.');
+  this.dialogRef.close(false);
 }
 
   title = ""
