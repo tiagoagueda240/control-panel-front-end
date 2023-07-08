@@ -23,8 +23,8 @@
     <mat-form-field appearance="fill">
       <mat-label>Tem equipamento?</mat-label>
       <mat-select [formControl]="haveEquipmentControl">
-        <mat-option value="True">Sim</mat-option>
-        <mat-option value="False">Não</mat-option>
+        <mat-option [value]="true">Sim</mat-option>
+        <mat-option [value]="false">Não</mat-option>
 
       </mat-select>
     </mat-form-field>

@@ -23,8 +23,8 @@
       <span class="tooltip">Agendamentos</span>
     </li>
 
-    <li>
-      <a class="menu" routerLink="/dashboard/ClassroomRequests">
+    <li  *ngIf="!isSecretariado()">
+      <a class="menu" routerLink="/dashboard/ClassroomRequests" >
        <i class='bx bx-receipt'></i>
        <span class="links_name">Requisitar Sala</span>
       </a>

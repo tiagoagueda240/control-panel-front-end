@@ -18,6 +18,7 @@ import { InfoScheduleComponent } from './info-schedule/info-schedule.component';
 import { SchedulesService } from 'src/app/services/schedules.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseService } from 'src/app/services/course.service';
+import { User } from 'src/app/models/user';
 
 
 @Component({
@@ -40,12 +41,14 @@ export class SchedulesComponent implements OnInit {
   timeSchedules: TimeSchedule[] = []
   clear: boolean = false
   functionType: String
+  userInfos: User
 
 
   constructor(private _snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute, private userService: UserService, private schoolClassService: SchoolClassService, private schedulesService: SchedulesService, private courseService: CourseService) {
     this.cursos = new Set<String>()
     this.anos = new Set<String>()
     this.turmas = new Set<String>()
+
     this.isSecretariado()
 
   }
@@ -75,7 +78,7 @@ export class SchedulesComponent implements OnInit {
       list:     'Lista',
     },
     editable:false,
-    selectable: false,
+    selectable: true,
     selectMirror: false,
     dayMaxEvents: true,
     slotMinTime: '06:00:00',
@@ -190,11 +193,13 @@ export class SchedulesComponent implements OnInit {
 
     console.log(event.groupId);
     console.log(clickInfo.event.groupId);
+    console.log(this.user)
+    console.log("this.user.functionType")
 
     const dialogRef = this.dialog.open(InfoScheduleComponent, {
       width: '700px',
       data: { id: event.groupId,
-        functionType: this.user.functionType
+        functionType: this.secretariado()
       },
     });
 
@@ -356,15 +361,15 @@ export class SchedulesComponent implements OnInit {
 }
 
 showFilters(): Boolean{
-  if("aluno" == this.user.functionType){
+  /*if("aluno" == this.functionType){
 
-      this.selectedYear = this.user.schoolClass.year
-      this.selectedCourse = this.user.schoolClass.courseId
-      this.selectedSchoolClass = this.user.schoolClass.name
+      this.selectedYear = String(this.userInfos.schoolClass.year)
+      this.selectedCourse = String(this.userInfos.schoolClass.courseId)
+      this.selectedSchoolClass = String(this.userInfos.schoolClass.name)
 
 
     this.searchTimeSchedules()
-  }
+  }*/
   return !("aluno" == this.user.functionType)
 }
 
@@ -384,6 +389,7 @@ isSecretariado(){
     console.log(user)
 
     this.functionType = user.functionType
+    this.userInfos = user
 
     console.log(user.schoolClass)
     console.log("ola")
@@ -401,7 +407,7 @@ isSecretariado(){
 
     });
 
-    if(!("secretariado" == this.functionType)){
+    if(!this.secretariado()){
       this.calendarOptions = {
         plugins: [
           interactionPlugin,

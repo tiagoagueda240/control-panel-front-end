@@ -17,6 +17,7 @@ import { ClassroomService } from 'src/app/services/classroom.service';
 import { CreateSalaDialogComponent } from './create/create-sala/create-sala.component';
 import { EditSalaDialogComponent } from './edit/edit-sala/edit-sala.component';
 import { MatPaginator } from '@angular/material/paginator';
+import { Classroom } from 'src/app/models/Classroom';
 
 @Component({
   selector: 'app-table',
@@ -58,6 +59,9 @@ ngOnInit(): void {
       this.dataLength = response.length;
       this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
     });
+
+
+
   } else if (this.type == "docentes") {
     this.displayedColumns = ['nome', 'numero', 'email', 'vinculo', 'maxHours', 'minHours', 'options'];
     this.userService.getProfessores().then(response => {
@@ -100,7 +104,8 @@ ngOnInit(): void {
 
 onDelete(row: any){
   const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-    data: 'Tem a certeza que deseja excluir?',
+    data: 'Tem a certeza que deseja excluir?'
+
   });
 
   dialogRef.afterClosed().subscribe((result) => {
@@ -173,20 +178,48 @@ onDelete(row: any){
           }
         );
       }else if(this.type == "salas"){
-        this.classroomService.deleteClassroom(row.id).subscribe(
-          () => {
-            console.log('Sala excluída com sucesso!');
-            this.classroomService.getClassrooms().then(response => {
-              console.log(response);
-              this.dataLength = response.length;
-              this.dataSource.data = response;
-            });
-          },
-          (error) => {
-            console.error('Ocorreu um erro ao excluir o curso:', error);
-            // this.showErrorMessage(error);
-          }
-        );
+        console.log(row)
+        console.log("teste")
+        this.classroomService.getClassroom(row.sala)
+        .then((response: any) => {
+          const classroomId = response.id;
+
+          this.classroomService.deleteClassroom(classroomId).subscribe(
+            () => {
+              console.log('Sala excluída com sucesso!');
+              this.classroomService.getClassrooms().then(response => {
+                console.log(response);
+                this.dataLength = response.length;
+                this.dataSource.data = response;
+              });
+
+              this.classroomService.getClassrooms().then(response => {
+                const lista = [];
+                for (let i = 0; i < response.length; i++) {
+                  const object = {
+                    sala: response[i].block + "." + response[i].floor + "." + response[i].classroomNumber,
+                    ocupacionLimit: response[i].ocupationLimit,
+                    haveEquipment: response[i].haveEquipment
+                  };
+                  lista.push(object);
+                }
+                this.dataSource.data = lista;
+                this.dataLength = lista.length;
+                this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
+              });
+            },
+            (error) => {
+              console.error('Ocorreu um erro ao excluir a sala:', error);
+            }
+          );
+        })
+        .catch((error) => {
+          console.error('Error getting classroom');
+          console.error(error);
+        });
+
+
+
       }
 
       this._snackBar.open('Eliminado com sucesso', 'Fechar');
@@ -253,9 +286,18 @@ onCreate(){
     dialogRef.afterClosed().subscribe((result) => {
       if (result === "adicionou") {
         this.classroomService.getClassrooms().then(response => {
-          console.log(response);
-          this.dataLength = response.length;
-          this.dataSource.data = response;
+          const lista = [];
+          for (let i = 0; i < response.length; i++) {
+            const object = {
+              sala: response[i].block + "." + response[i].floor + "." + response[i].classroomNumber,
+              ocupacionLimit: response[i].ocupationLimit,
+              haveEquipment: response[i].haveEquipment
+            };
+            lista.push(object);
+          }
+          this.dataSource.data = lista;
+          this.dataLength = lista.length;
+          this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
         });
       }
     });
@@ -338,9 +380,18 @@ onEdit(row: any){
     dialogRef.afterClosed().subscribe((result) => {
       if (result === "editou") {
         this.classroomService.getClassrooms().then(response => {
-          console.log(response);
-          this.dataLength = response.length;
-          this.dataSource.data = response;
+          const lista = [];
+          for (let i = 0; i < response.length; i++) {
+            const object = {
+              sala: response[i].block + "." + response[i].floor + "." + response[i].classroomNumber,
+              ocupacionLimit: response[i].ocupationLimit,
+              haveEquipment: response[i].haveEquipment
+            };
+            lista.push(object);
+          }
+          this.dataSource.data = lista;
+          this.dataLength = lista.length;
+          this.dataSource.paginator = this.paginator; // Atribuição do MatPaginator ao dataSource
         });
       }
     });

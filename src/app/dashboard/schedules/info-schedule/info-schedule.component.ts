@@ -25,7 +25,7 @@ export class InfoScheduleComponent{
   days: string;
   schoolClassYear: string;
   tipoAula: string;
-  functionType: string
+  functionType: boolean
 
 
   constructor(
@@ -63,7 +63,7 @@ export class InfoScheduleComponent{
   }
 
   isSecretariado(): boolean{
-    return this.functionType == "secretariado"
+    return this.functionType
   }
 
   onNoClick(){

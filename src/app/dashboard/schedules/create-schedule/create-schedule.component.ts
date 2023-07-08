@@ -168,68 +168,61 @@ export class CreateScheduleComponent{
   }
 
 
-
-  onSubmit() {
-    let ucId = 1
+  async onSubmit() {
+    let ucId = 1;
 
     this.ucs.forEach((info) => {
-      if(info.name == this.ucControl.value){
-        ucId = info.id
+      if (info.name == this.ucControl.value) {
+        ucId = info.id;
       }
-    })
-
-    var classroomId = 0
-    this.classroomService.getClassroom().then(response => {
-      classroomId = response.id
     });
 
-    const formData = this.formBuilder.group({
-      startTime: this.startTimeControl.value,
-      endTime: this.endTimeControl.value,
-      startRecur: this.startDateControl.value,
-      endRecur:  this.endDateControl.value,
-      daysOfWeek: [new Date(Date.parse(this.startDateControl.value)).getDay().toString()],
-      curricularUnitId: ucId,
-      schoolClassId: this.schoolClassId,
-      classroomId: classroomId ,
-      teacherId: Number(this.teacherControl.value),
-      pratica: this.typeControl.value == "Prática"
+    try {
+      const response = await this.classroomService.getClassroom(this.classroomControl.value!)
+      const classroomId = response.id;
 
-    });
-    console.log(formData)
+      const formData = this.formBuilder.group({
+        startTime: this.startTimeControl.value,
+        endTime: this.endTimeControl.value,
+        startRecur: this.startDateControl.value,
+        endRecur: this.endDateControl.value,
+        daysOfWeek: [new Date(Date.parse(this.startDateControl.value)).getDay().toString()],
+        curricularUnitId: ucId,
+        schoolClassId: this.schoolClassId,
+        classroomId: classroomId,
+        teacherId: Number(this.teacherControl.value),
+        pratica: this.typeControl.value == "Prática",
+      });
 
-
-    if(this.start != undefined && this.end != undefined){
-
-        this.schedulesService.addTimeSchedule( formData.value ).subscribe(
+      if (this.start != undefined && this.end != undefined) {
+        this.schedulesService.addTimeSchedule(formData.value).subscribe(
           response => {
             console.log('POST request successful');
             console.log(response);
             this.dialogRef.close("adicionou");
-
           },
           error => {
             console.error('Error making POST request');
             console.error(error);
           }
         );
-
-      }else{
-
-        this.schedulesService.editTimeSchedule( formData.value,  Number(this.timeScheduleId) ).subscribe(
+      } else {
+        this.schedulesService.editTimeSchedule(formData.value, Number(this.timeScheduleId)).subscribe(
           response => {
             console.log('POST request successful');
             console.log(response);
             this.dialogRef.close("editou");
-
           },
           error => {
             console.error('Error making POST request');
             console.error(error);
           }
         );
-
       }
-
+    } catch (error) {
+      console.error('Error getting classroom');
+      console.error(error);
+    }
   }
+
 }

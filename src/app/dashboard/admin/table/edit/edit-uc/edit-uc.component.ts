@@ -31,7 +31,7 @@ export class EditUCDialogComponent {
     this.practicalHoursControl.setValue(this.uc.horasPraticas.toString())
     this.theoreticalHoursControl.setValue(this.uc.horasTeoricas.toString())
     this.cicleControl.setValue(this.uc.ciclo.toString())
-
+    this.siglaControl.setValue(this.uc.sigla)
 
     }
 
@@ -44,7 +44,8 @@ export class EditUCDialogComponent {
         semestre: parseInt(this.semestreControl.value!!, 10),
         ciclo: parseInt(this.cicleControl.value!!, 10),
         horasPraticas: parseFloat(this.practicalHoursControl.value!!),
-        horasTeoricas: parseFloat(this.theoreticalHoursControl.value!!)
+        horasTeoricas: parseFloat(this.theoreticalHoursControl.value!!),
+        color: this.uc.color
 
       });
 

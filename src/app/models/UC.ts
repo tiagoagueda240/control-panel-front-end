@@ -8,6 +8,8 @@ export interface UC {
   ciclo: number;
   horasPraticas: number;
   horasTeoricas: number;
+  sigla: string;
+  color: string;
 
 }
 

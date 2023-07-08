@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { SchoolClassService } from 'src/app/services/schoolClass.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -60,12 +61,14 @@ onNoClick() {
   vinculoControl = new FormControl('');
   maxHoursControl = new FormControl('');
   minHoursControl = new FormControl('');
+  turmas : Set<string>
 
 
   constructor(
     public dialogRef: MatDialogRef<EditUserDialogComponent>,
     private formBuilder: FormBuilder,
     private userService: UserService,
+    private schoolClassService: SchoolClassService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.title = "Editar " + data.tipo;
@@ -74,6 +77,8 @@ onNoClick() {
     this.nameControl.setValue(this.data.info.name)
     this.numberControl.setValue(this.data.info.number)
     this.emailControl.setValue(this.data.info.email)
+    //this.schoolClassControl.setValue(this.data.)
+
 
     if(this.eDocente()){
       this.vinculoControl.setValue(this.data.info.vinculo)
@@ -81,6 +86,14 @@ onNoClick() {
       this.minHoursControl.setValue(this.data.info.minHours)
 
     }
+
+    this.schoolClassService.getSchoolClasses().then(response => {
+      this.turmas = new Set<string>()
+
+      for (let i = 0; i < response.length; i++) {
+        this.turmas.add(response[i].name)
+      }
+  })
 
 
     }

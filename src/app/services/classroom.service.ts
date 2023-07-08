@@ -22,13 +22,10 @@ export class ClassroomService {
     )
 }
 
-public getClassroom(): Promise<any> {
-  return this.httpClient.get(CLASSROOM_BLOCK)
-  .toPromise()
-  .then(
-    (resposta: any) => resposta
-  )
+public getClassroom(nome: string): Promise<any> {
+  return this.httpClient.get(CLASSROOM_BLOCK + nome).toPromise();
 }
+
 
 deleteClassroom(id: string): Observable<any> {
   return this.httpClient.delete(`${CLASSROOM}/${id}`);

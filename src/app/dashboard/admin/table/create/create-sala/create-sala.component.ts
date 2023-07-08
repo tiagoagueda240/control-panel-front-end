@@ -57,7 +57,7 @@ onNoClick() {
   title = "Adicionar sala de aula"
   salaControl = new FormControl('');
   ocupationLimitControl = new FormControl('');
-  haveEquipmentControl = new FormControl('');
+  haveEquipmentControl = new FormControl(true);
 
 
 

@@ -9,7 +9,7 @@ export const SCHEDULES = `${API_URL}/time-schedule`
 export const SCHOOLCLASS = `${API_URL}/school-class`
 export const USER = `${API_URL}/users`
 
-export const CLASSROOM_BLOCK = `${CLASSROOM}/block`
+export const CLASSROOM_BLOCK = `${CLASSROOM}/block/`
 export const REQUEST_STATUS = `${REQUEST}/status`
 export const REQUEST_CLASSROOM = `${REQUEST}/classroom`
 export const USER_BY_EMAIL = `${USER}/email/`

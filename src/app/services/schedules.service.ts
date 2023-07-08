@@ -27,7 +27,7 @@ export class SchedulesService {
   }
 
   addTimeSchedule(timeSchedule: any) {
-    return this.httpClient.patch<any>(SCHEDULES, timeSchedule)
+    return this.httpClient.post<any>(SCHEDULES, timeSchedule)
   }
 
 }

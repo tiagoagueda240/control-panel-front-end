@@ -16,7 +16,7 @@
       <button mat-icon-button (click)="onAccept(request)" *ngIf="isSecretariado(request.author.email)" matTooltip="Aprovar">
         <mat-icon>check</mat-icon>
       </button>
-      <button mat-icon-button color="warn" (click)="updateStatus(request.id)" *ngIf="statusRecusado(request.status)" matTooltip="Recusar">
+      <button mat-icon-button color="warn" (click)="updateStatus(request.id)" *ngIf="statusRecusado(request.status)">
         <mat-icon>close</mat-icon>
       </button>
     </mat-card-actions>

@@ -4,6 +4,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Classroom } from 'src/app/models/Classroom';
 import { Course } from 'src/app/models/course';
+import { ClassroomService } from 'src/app/services/classroom.service';
 import { CourseService } from 'src/app/services/course.service';
 
 @Component({
@@ -13,14 +14,22 @@ import { CourseService } from 'src/app/services/course.service';
 })
 export class EditSalaDialogComponent {
  curso : Classroom
+
+
  onSubmit() {
+  const salaInfo = this.salaControl.value!!.split(".");
+
   const formData = this.formBuilder.group({
-    studyCycle:  parseInt(this.haveEquipmentControl.value!!, 10),
-    acronym: this.ocupationLimitControl.value,
-    name: this.salaControl.value
+    block: salaInfo[0] ,
+    floor: Number(salaInfo[1]),
+    classroomNumber: Number(salaInfo[2]) ,
+    ocupationLimit: Number(this.ocupationLimitControl.value),
+    haveEquipment: this.haveEquipmentControl.value,
+
   });
 
-  this.courseService.editCourse( formData.value, this.curso.id ).subscribe(
+  console.log(this.curso)
+  this.classroomService.editClassroom( formData.value, this.curso.id ).subscribe(
     response => {
       console.log('POST request successful');
       console.log(response);
@@ -42,23 +51,34 @@ onNoClick() {
   title = "Editar sala de aula"
   salaControl = new FormControl('');
   ocupationLimitControl = new FormControl('');
-  haveEquipmentControl = new FormControl('');
+  haveEquipmentControl = new FormControl(false);
 
 
 
   constructor(
     public dialogRef: MatDialogRef<EditSalaDialogComponent>,
     private formBuilder: FormBuilder,
-    private courseService: CourseService,
+    private classroomService: ClassroomService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-(this.curso = data);
+    (async () => {
+      this.curso = data;
+      const sala = this.curso.block + "." + this.curso.floor + "." + this.curso.classroomNumber;
 
-console.log(this.curso)
-this.salaControl.setValue(this.curso.block)
-this.ocupationLimitControl.setValue(this.curso.ocupationLimit.toString())
-this.haveEquipmentControl.setValue(this.curso.haveEquipment.toString())
+      try {
+        const response = await this.classroomService.getClassroom(sala);
+        this.curso = response;
+      } catch (error) {
+        console.error('Error getting classroom');
+        console.error(error);
+      }
 
-    }
+      console.log(this.curso);
+      this.salaControl.setValue(sala);
+      this.ocupationLimitControl.setValue(this.curso.ocupationLimit.toString());
+      this.haveEquipmentControl.setValue(this.curso.haveEquipment);
+    })();
+  }
+
 
 }
